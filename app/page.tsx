@@ -20,6 +20,8 @@ import {
   School,
   User,
 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function TwigaLandingPage() {
   return (
@@ -264,46 +266,87 @@ export default function TwigaLandingPage() {
               <h3 className="text-2xl font-semibold text-slate-700 mb-8">
                 Sponsors
               </h3>
-              <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-                <Card className="border-blue-100 hover:shadow-lg transition-shadow p-6">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <div className="text-2xl font-bold text-blue-600">M</div>
+              <div className="grid md:grid-cols-3 gap-12 max-w-5xl mx-auto">
+                <Card className="group relative overflow-hidden rounded-3xl border-blue-200 bg-white p-8 shadow-lg hover:shadow-xl transition-all">
+                  <div className="flex items-center md:items-start gap-6">
+                    <div className="shrink-0 w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-blue-50 ring-1 ring-blue-100 flex items-center justify-center shadow-inner">
+                      <Image
+                        src="/logos/meta.png"
+                        alt="Meta logo"
+                        width={88}
+                        height={88}
+                        className="object-contain w-16 h-16 md:w-20 md:h-20"
+                      />
                     </div>
                     <div className="text-left">
-                      <h4 className="text-xl font-semibold text-slate-800">
+                      <h4 className="text-2xl md:text-3xl font-semibold text-slate-900">
                         Meta
                       </h4>
-                      <p className="text-slate-600">
+                      <p className="mt-2 md:mt-3 text-lg md:text-xl text-slate-600">
                         Meta Llama Impact Grant Innovation Award 2024
                       </p>
-                      <Badge className="mt-2 bg-blue-100 text-blue-800 hover:bg-blue-100">
-                        <Award className="w-3 h-3 mr-1" />
+                      <Badge className="mt-4 md:mt-5 bg-blue-100 text-blue-800 hover:bg-blue-100 rounded-full px-3 py-1 text-sm md:text-base">
+                        <Award className="w-4 h-4 mr-2" />
                         Grant Winner
                       </Badge>
                     </div>
                   </div>
                 </Card>
 
-                <Card className="border-purple-100 hover:shadow-lg transition-shadow p-6">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-16 h-16 bg-purple-100 rounded-lg flex items-center justify-center">
-                      <div className="text-2xl font-bold text-purple-600">
-                        N
-                      </div>
+                <Card className="group relative overflow-hidden rounded-3xl border-purple-200 bg-white p-8 shadow-lg hover:shadow-xl transition-all">
+                  <div className="flex items-center md:items-start gap-6">
+                    <div className="shrink-0 w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-purple-50 ring-1 ring-purple-100 flex items-center justify-center shadow-inner">
+                      <Image
+                        src="/logos/neon.png"
+                        alt="Neon logo"
+                        width={88}
+                        height={88}
+                        className="object-contain w-16 h-16 md:w-20 md:h-20"
+                      />
                     </div>
                     <div className="text-left">
-                      <h4 className="text-xl font-semibold text-slate-800">
+                      <h4 className="text-2xl md:text-3xl font-semibold text-slate-900">
                         Neon
                       </h4>
-                      <p className="text-slate-600">
+                      <p className="mt-2 md:mt-3 text-lg md:text-xl text-slate-600">
                         Database infrastructure sponsor
                       </p>
-                      <Badge className="mt-2 bg-purple-100 text-purple-800 hover:bg-purple-100">
+                      <Badge className="mt-4 md:mt-5 bg-purple-100 text-purple-800 hover:bg-purple-100 rounded-full px-3 py-1 text-sm md:text-base">
                         Infrastructure Partner
                       </Badge>
                     </div>
                   </div>
+                </Card>
+
+                {/* Tanzania AI Community */}
+                <Card className="group relative overflow-hidden rounded-3xl border-teal-200 bg-white p-8 shadow-lg hover:shadow-xl transition-all">
+                  <Link
+                    href="https://ai.or.tz/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center md:items-start gap-6"
+                  >
+                    <div className="shrink-0 w-24 h-24 md:w-28 md:h-28 rounded-2xl bg-teal-50 ring-1 ring-teal-100 flex items-center justify-center shadow-inner">
+                      <Image
+                        src="/logos/t-ai-c.png"
+                        alt="Tanzania AI Community logo"
+                        width={88}
+                        height={88}
+                        className="object-contain w-16 h-16 md:w-20 md:h-20"
+                      />
+                    </div>
+                    <div className="text-left">
+                      <h4 className="text-2xl md:text-3xl font-semibold text-slate-900">
+                        Tanzania AI Community
+                      </h4>
+                      <p className="mt-2 md:mt-3 text-lg md:text-xl text-slate-600">
+                        Open-source community leading the Twiga project
+                      </p>
+                      <Badge className="mt-4 md:mt-5 bg-teal-100 text-teal-800 hover:bg-teal-100 rounded-full px-3 py-1 text-sm md:text-base">
+                        Community Partner
+                      </Badge>
+                    </div>
+                  </Link>
                 </Card>
               </div>
             </div>
@@ -313,17 +356,26 @@ export default function TwigaLandingPage() {
               <h3 className="text-2xl font-semibold text-slate-700 mb-8">
                 Partners
               </h3>
-              <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
                 <Card className="border-indigo-100 hover:shadow-lg transition-shadow p-6">
-                  <div className="flex items-center space-x-4">
+                  <Link
+                    href="https://kthais.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-4"
+                  >
                     <div className="w-16 h-16 bg-indigo-100 rounded-lg flex items-center justify-center">
-                      <div className="text-xl font-bold text-indigo-600">
-                        KTH
-                      </div>
+                      <Image
+                        src="/logos/kthis.png"
+                        alt="KTH AI Society logo"
+                        width={48}
+                        height={48}
+                        className="object-contain w-12 h-12"
+                      />
                     </div>
                     <div className="text-left">
                       <h4 className="text-xl font-semibold text-slate-800">
-                        KTH Royal Institute of Technology
+                        KTH AI Society
                       </h4>
                       <p className="text-slate-600">
                         Student developers as key contributors
@@ -333,7 +385,7 @@ export default function TwigaLandingPage() {
                         Development Partner
                       </Badge>
                     </div>
-                  </div>
+                  </Link>
                 </Card>
 
                 <Card className="border-green-100 hover:shadow-lg transition-shadow p-6">
@@ -351,6 +403,53 @@ export default function TwigaLandingPage() {
                       <Badge className="mt-2 bg-green-100 text-green-800 hover:bg-green-100">
                         <CheckCircle className="w-3 h-3 mr-1" />
                         MOU Signed
+                      </Badge>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* TIB Partner */}
+                <Card className="border-amber-100 hover:shadow-lg transition-shadow p-6">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-16 h-16 bg-amber-100 rounded-lg flex items-center justify-center">
+                      <Image
+                        src="/logos/tib.png"
+                        alt="TIB logo"
+                        width={48}
+                        height={48}
+                        className="object-contain w-12 h-12"
+                      />
+                    </div>
+                    <div className="text-left">
+                      <h4 className="text-xl font-semibold text-slate-800">
+                        TIB - Leibniz Information Center for Science and
+                        Technology and University
+                      </h4>
+                      <p className="text-slate-600">Official partner</p>
+                      <Badge className="mt-2 bg-amber-100 text-amber-800 hover:bg-amber-100">
+                        <CheckCircle className="w-3 h-3 mr-1" />
+                        MOU Signed
+                      </Badge>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Open Research Knowledge Graph (ORKG) Team */}
+                <Card className="border-rose-100 hover:shadow-lg transition-shadow p-6">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-16 h-16 bg-rose-100 rounded-lg flex items-center justify-center">
+                      <div className="text-xl font-bold text-rose-600">
+                        ORKG
+                      </div>
+                    </div>
+                    <div className="text-left">
+                      <h4 className="text-xl font-semibold text-slate-800">
+                        Open Research Knowledge Graph (ORKG) Team
+                      </h4>
+                      <p className="text-slate-600">Research partner</p>
+                      <Badge className="mt-2 bg-rose-100 text-rose-800 hover:bg-rose-100">
+                        <BookOpen className="w-3 h-3 mr-1" />
+                        Research Partner
                       </Badge>
                     </div>
                   </div>
@@ -542,22 +641,22 @@ export default function TwigaLandingPage() {
               <h3 className="font-semibold mb-4">Project</h3>
               <ul className="space-y-2 text-slate-300">
                 <li>
-                  <a
+                  <Link
                     href="https://github.com/Tanzania-AI-Community/twiga"
                     className="hover:text-white transition-colors"
                   >
                     GitHub Repository
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link href="#" className="hover:text-white transition-colors">
                     Documentation
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link href="#" className="hover:text-white transition-colors">
                     Roadmap
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -566,19 +665,19 @@ export default function TwigaLandingPage() {
               <h3 className="font-semibold mb-4">Community</h3>
               <ul className="space-y-2 text-slate-300">
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link href="#" className="hover:text-white transition-colors">
                     Discord
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link href="#" className="hover:text-white transition-colors">
                     Tanzania AI Community
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link href="#" className="hover:text-white transition-colors">
                     Contributors
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
