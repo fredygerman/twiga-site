@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Github } from "lucide-react";
 
 export default function SiteHeader() {
   return (
@@ -26,6 +27,15 @@ export default function SiteHeader() {
             className="text-slate-600 hover:text-green-700 transition-colors"
           >
             Register
+          </Link>
+          <Link
+            href="https://github.com/Tanzania-AI-Community/twiga"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-slate-600 hover:text-green-700 transition-colors flex items-center space-x-1"
+          >
+            <Github className="w-4 h-4" />
+            <span>GitHub</span>
           </Link>
         </nav>
       </div>
