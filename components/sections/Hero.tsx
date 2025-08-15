@@ -30,10 +30,7 @@ export default function Hero() {
             className="bg-lime-500 hover:bg-lime-600 text-white px-8 py-3 text-lg"
             asChild
           >
-            <Link href="#register">
-              <MessageCircle className="w-5 h-5 mr-2" />
-              Join the Beta – Free for Teachers
-            </Link>
+            <Link href="#register">Join the Beta, Free for Teachers</Link>
           </Button>
           <Button
             variant="outline"
