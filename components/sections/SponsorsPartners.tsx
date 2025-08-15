@@ -140,11 +140,12 @@ export default function SponsorsPartners() {
                   </div>
                   <div className="text-left">
                     <h4 className="text-2xl md:text-3xl font-semibold text-slate-900">
-                      KTH AI Society, Tanzania Institute of Education, Open
-                      Research Knowledge Graph team
+                      KTH AI Society, A participatory community for everyone
+                      into AI at KTH Royal Institute of Technology
                     </h4>
                     <p className="mt-2 md:mt-3 text-lg md:text-xl text-slate-600">
-                      Student developers as key contributors
+                      We have some of it's members developers as key
+                      contributors
                     </p>
                     <Badge className="mt-4 md:mt-5 bg-indigo-100 text-indigo-800 hover:bg-indigo-100 rounded-full px-3 py-1 text-sm md:text-base">
                       <Users className="w-4 h-4 mr-2" />
