@@ -140,12 +140,13 @@ export default function SponsorsPartners() {
                   </div>
                   <div className="text-left">
                     <h4 className="text-2xl md:text-3xl font-semibold text-slate-900">
-                      KTH AI Society, A participatory community for everyone
-                      into AI at KTH Royal Institute of Technology
+                      KTH AI Society
                     </h4>
-                    <p className="mt-2 md:mt-3 text-lg md:text-xl text-slate-600">
-                      We have some of it's members developers as key
-                      contributors
+                    <h5 className="mt-1 text-lg md:text-xl font-medium text-slate-700">
+                      A participatory community for everyone into AI
+                    </h5>
+                    <p className="mt-2 md:mt-3 text-base md:text-lg text-slate-600">
+                      KTH Royal Institute of Technology
                     </p>
                     <Badge className="mt-4 md:mt-5 bg-indigo-100 text-indigo-800 hover:bg-indigo-100 rounded-full px-3 py-1 text-sm md:text-base">
                       <Users className="w-4 h-4 mr-2" />
@@ -173,11 +174,13 @@ export default function SponsorsPartners() {
                   </div>
                   <div className="text-left">
                     <h4 className="text-2xl md:text-3xl font-semibold text-slate-900">
-                      TIB - Leibniz Information Center for Science and
-                      Technology and University
+                      TIB
                     </h4>
-                    <p className="mt-2 md:mt-3 text-lg md:text-xl text-slate-600">
-                      Official partner
+                    <h5 className="mt-1 text-lg md:text-xl font-medium text-slate-700">
+                      Leibniz Information Center
+                    </h5>
+                    <p className="mt-2 md:mt-3 text-base md:text-lg text-slate-600">
+                      Science and Technology research
                     </p>
                     <Badge className="mt-4 md:mt-5 bg-amber-100 text-amber-800 hover:bg-amber-100 rounded-full px-3 py-1 text-sm md:text-base">
                       <CheckCircle className="w-4 h-4 mr-2" />
