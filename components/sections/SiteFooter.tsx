@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function SiteFooter() {
   return (
@@ -7,7 +8,13 @@ export default function SiteFooter() {
         <div className="grid md:grid-cols-3 gap-8">
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <div className="text-2xl">🦒</div>
+              <Image
+                src="/logos/twiga_icon.png"
+                alt="Twiga logo"
+                width={32}
+                height={32}
+                className="w-8 h-8"
+              />
               <span className="text-xl font-bold">Twiga</span>
             </div>
             <p className="text-slate-300">
@@ -110,16 +117,10 @@ export default function SiteFooter() {
 
         <div className="border-t border-slate-700 mt-8 pt-8 text-center text-slate-400">
           <div className="flex justify-center space-x-6 mb-4">
-            <Link
-              href="#"
-              className="hover:text-white transition-colors"
-            >
+            <Link href="#" className="hover:text-white transition-colors">
               Privacy Policy
             </Link>
-            <Link
-              href="#"
-              className="hover:text-white transition-colors"
-            >
+            <Link href="#" className="hover:text-white transition-colors">
               Terms of Service
             </Link>
           </div>

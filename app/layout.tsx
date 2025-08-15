@@ -21,6 +21,10 @@ export const metadata: Metadata = {
   title: "Twiga - AI Teaching Companion for Tanzanian Educators",
   description:
     "Empowering Tanzanian teachers with AI-powered lesson support, resources, and guidance through WhatsApp. Meta Llama Impact Grant Award Winner 2024.",
+  icons: {
+    icon: "/logos/twiga_icon.png",
+    apple: "/logos/twiga_icon.png",
+  },
 };
 
 export default function RootLayout({

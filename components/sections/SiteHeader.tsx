@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Github } from "lucide-react";
 
 export default function SiteHeader() {
@@ -6,7 +7,13 @@ export default function SiteHeader() {
     <header className="container mx-auto px-4 py-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <div className="text-2xl">🦒</div>
+          <Image
+            src="/logos/twiga_icon.png"
+            alt="Twiga logo"
+            width={32}
+            height={32}
+            className="w-8 h-8"
+          />
           <span className="text-xl font-bold text-green-700">Twiga</span>
         </div>
         <nav className="hidden md:flex space-x-6">

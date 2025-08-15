@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Award } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Hero() {
   return (
@@ -11,6 +12,16 @@ export default function Hero() {
           <Award className="w-4 h-4 mr-2" />
           Meta Llama Impact Grant Award Winner 2024
         </Badge>
+
+        <div className="flex justify-center mb-6">
+          <Image
+            src="/logos/twiga_icon.png"
+            alt="Twiga logo"
+            width={80}
+            height={80}
+            className="w-16 h-16 md:w-20 md:h-20"
+          />
+        </div>
 
         <h1 className="text-4xl md:text-6xl font-bold text-slate-800 mb-6 leading-tight">
           Twiga
