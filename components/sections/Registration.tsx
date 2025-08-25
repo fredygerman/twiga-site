@@ -41,8 +41,15 @@ const FormSchema = z.object({
     .min(10, {
       message: "Please enter a valid WhatsApp number.",
     })
-    .regex(/^\+?[0-9\s-()]+$/, {
-      message: "Please enter a valid phone number format.",
+    .regex(/^(255|0)[67]\d{8}$/, {
+      message: "Please enter a valid Tanzanian phone number (255XXXXXXXXX or 0XXXXXXXXX).",
+    })
+    .transform((val) => {
+      // Convert 0XXXXXXXXX to 255XXXXXXXXX format
+      if (val.startsWith('0')) {
+        return '255' + val.slice(1);
+      }
+      return val;
     }),
 });
 
@@ -233,12 +240,16 @@ export default function Registration() {
                         </FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="+255 XXX XXX XXX"
+                            placeholder="255XXXXXXXXX or 0XXXXXXXXX"
                             disabled={isPending}
                             {...field}
                           />
                         </FormControl>
                         <FormMessage />
+                        <p className="text-xs text-slate-500 mt-1">
+                          <strong>Important:</strong> This will be your primary communication number with Twiga. 
+                          Only Tanzanian numbers are supported. Changing your number later will require re-registration.
+                        </p>
                       </FormItem>
                     )}
                   />
@@ -260,7 +271,8 @@ export default function Registration() {
 
                   <p className="text-sm text-slate-500 text-center">
                     By registering, you agree to receive WhatsApp messages from
-                    Twiga. Free for all Tanzanian teachers.
+                    Twiga on the provided number. Free for all Tanzanian teachers.
+                    Your phone number will be used for all future communications.
                   </p>
                 </form>
               </Form>
