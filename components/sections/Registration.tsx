@@ -42,12 +42,13 @@ const FormSchema = z.object({
       message: "Please enter a valid WhatsApp number.",
     })
     .regex(/^(255|0)[67]\d{8}$/, {
-      message: "Please enter a valid Tanzanian phone number (255XXXXXXXXX or 0XXXXXXXXX).",
+      message:
+        "Please enter a valid Tanzanian phone number (255XXXXXXXXX or 0XXXXXXXXX).",
     })
     .transform((val) => {
       // Convert 0XXXXXXXXX to 255XXXXXXXXX format
-      if (val.startsWith('0')) {
-        return '255' + val.slice(1);
+      if (val.startsWith("0")) {
+        return "255" + val.slice(1);
       }
       return val;
     }),
@@ -247,8 +248,10 @@ export default function Registration() {
                         </FormControl>
                         <FormMessage />
                         <p className="text-xs text-slate-500 mt-1">
-                          <strong>Important:</strong> This will be your primary communication number with Twiga. 
-                          Only Tanzanian numbers are supported. Changing your number later will require re-registration.
+                          <strong>Important:</strong> This will be your primary
+                          communication number with Twiga. Only Tanzanian
+                          numbers are supported. Changing your number later will
+                          require re-registration.
                         </p>
                       </FormItem>
                     )}
@@ -271,8 +274,9 @@ export default function Registration() {
 
                   <p className="text-sm text-slate-500 text-center">
                     By registering, you agree to receive WhatsApp messages from
-                    Twiga on the provided number. Free for all Tanzanian teachers.
-                    Your phone number will be used for all future communications.
+                    Twiga on the provided number. Free for all Tanzanian
+                    teachers. Your phone number will be used for all future
+                    communications.
                   </p>
                 </form>
               </Form>
