@@ -4,7 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { submitRegistration } from "@/lib/actions";
 import {
   Card,
   CardHeader,
@@ -48,19 +49,10 @@ const FormSchema = z.object({
 type FormData = z.infer<typeof FormSchema>;
 
 export default function Registration() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [submitStatus, setSubmitStatus] = useState<
     "idle" | "success" | "error"
   >("idle");
-
-  // Use environment variables for form configuration
-  const GOOGLE_FORM_ACTION = process.env.NEXT_PUBLIC_GOOGLE_FORM_ACTION;
-  const FORM_ENTRIES = {
-    fullName: process.env.NEXT_PUBLIC_GOOGLE_FORM_ENTRY_FULL_NAME,
-    schoolName: process.env.NEXT_PUBLIC_GOOGLE_FORM_ENTRY_SCHOOL_NAME,
-    email: process.env.NEXT_PUBLIC_GOOGLE_FORM_ENTRY_EMAIL,
-    whatsappNumber: process.env.NEXT_PUBLIC_GOOGLE_FORM_ENTRY_WHATSAPP,
-  };
 
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
@@ -72,84 +64,40 @@ export default function Registration() {
     },
   });
 
-  const submitToGoogleForms = (data: FormData) => {
-    // Validate environment variables
-    if (!GOOGLE_FORM_ACTION || !FORM_ENTRIES.fullName) {
-      console.error(
-        "Google Forms configuration missing in environment variables"
-      );
-      throw new Error("Form configuration error. Please contact support.");
-    }
-
-    // Create a form element for Google Forms submission
-    const formElement = document.createElement("form");
-    formElement.action = GOOGLE_FORM_ACTION; // example: "https://docs.google.com/forms/u/0/d/e/[FORMID]/formResponse"
-    formElement.method = "POST";
-    formElement.target = "hidden_iframe";
-    formElement.style.display = "none";
-
-    // Add form fields with Google Forms entry IDs
-    const addField = (name: string, value: string) => {
-      const input = document.createElement("input");
-      input.type = "hidden";
-      input.name = name;
-      input.value = value;
-      formElement.appendChild(input);
-    };
-
-    // Use environment variables for entry IDs
-    addField(FORM_ENTRIES.fullName!, data.fullName);
-    addField(FORM_ENTRIES.schoolName!, data.schoolName);
-    addField(FORM_ENTRIES.email!, data.email);
-    addField(FORM_ENTRIES.whatsappNumber!, data.whatsappNumber);
-
-    // Create hidden iframe
-    const iframe = document.createElement("iframe");
-    iframe.name = "hidden_iframe";
-    iframe.style.display = "none";
-
-    // Add elements to DOM and submit
-    document.body.appendChild(iframe);
-    document.body.appendChild(formElement);
-    formElement.submit();
-
-    // Clean up after submission
-    setTimeout(() => {
-      if (document.body.contains(iframe)) {
-        document.body.removeChild(iframe);
-      }
-      if (document.body.contains(formElement)) {
-        document.body.removeChild(formElement);
-      }
-    }, 1000);
-  };
-
   const onSubmit = (data: FormData) => {
-    setIsSubmitting(true);
-    setSubmitStatus("idle");
+    startTransition(async () => {
+      try {
+        const formData = new FormData();
+        formData.append("fullName", data.fullName);
+        formData.append("schoolName", data.schoolName);
+        formData.append("email", data.email);
+        formData.append("whatsappNumber", data.whatsappNumber);
 
-    try {
-      // Submit to Google Forms
-      submitToGoogleForms(data);
+        const result = await submitRegistration(formData);
 
-      // Show success message after a brief delay
-      setTimeout(() => {
-        setIsSubmitting(false);
-        setSubmitStatus("success");
-        form.reset();
-        toast.success("Registration Successful!", {
+        if (result.success) {
+          setSubmitStatus("success");
+          form.reset();
+          toast.success("Registration Successful!", {
+            description:
+              "We'll get back to you when your application is approved.",
+          });
+        } else {
+          setSubmitStatus("error");
+          toast.error("Registration Failed", {
+            description:
+              result.error ||
+              "Please try again or contact support if the problem persists.",
+          });
+        }
+      } catch (error) {
+        setSubmitStatus("error");
+        toast.error("Registration Failed", {
           description:
-            "We'll send your activation link to WhatsApp within 24 hours.",
+            "Please try again or contact support if the problem persists.",
         });
-      }, 2000);
-    } catch (error) {
-      setIsSubmitting(false);
-      setSubmitStatus("error");
-      toast.error("Registration Failed", {
-        description:
-          "Please try again or contact support if the problem persists.",
-      });
-    }
+      }
+    });
   };
 
   if (submitStatus === "success") {
@@ -164,8 +112,8 @@ export default function Registration() {
                   Registration Successful!
                 </h3>
                 <p className="text-slate-600 mb-6">
-                  Thank you for joining Twiga! We'll send your activation link
-                  to WhatsApp within 24 hours.
+                  Thank you for joining Twiga! We'll get back to you when your
+                  application is approved.
                 </p>
                 <Button
                   onClick={() => setSubmitStatus("idle")}
@@ -222,7 +170,7 @@ export default function Registration() {
                           <FormControl>
                             <Input
                               placeholder="Enter your full name"
-                              disabled={isSubmitting}
+                              disabled={isPending}
                               {...field}
                             />
                           </FormControl>
@@ -242,7 +190,7 @@ export default function Registration() {
                           <FormControl>
                             <Input
                               placeholder="Your school name"
-                              disabled={isSubmitting}
+                              disabled={isPending}
                               {...field}
                             />
                           </FormControl>
@@ -265,7 +213,7 @@ export default function Registration() {
                           <Input
                             type="email"
                             placeholder="your.email@example.com"
-                            disabled={isSubmitting}
+                            disabled={isPending}
                             {...field}
                           />
                         </FormControl>
@@ -286,7 +234,7 @@ export default function Registration() {
                         <FormControl>
                           <Input
                             placeholder="+255 XXX XXX XXX"
-                            disabled={isSubmitting}
+                            disabled={isPending}
                             {...field}
                           />
                         </FormControl>
@@ -298,9 +246,9 @@ export default function Registration() {
                   <Button
                     type="submit"
                     className="w-full bg-lime-500 hover:bg-lime-600 text-white py-3 text-lg disabled:opacity-50"
-                    disabled={isSubmitting}
+                    disabled={isPending}
                   >
-                    {isSubmitting ? (
+                    {isPending ? (
                       <>
                         <div className="w-5 h-5 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
                         Registering...

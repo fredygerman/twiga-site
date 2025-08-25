@@ -70,18 +70,22 @@ export default function Hero() {
             </div>
 
             <div className="space-y-4 text-left">
-              <div className="bg-slate-100 rounded-lg p-3 max-w-xs">
-                <p className="text-sm">I need a Grade 5 math lesson plan</p>
-              </div>
-              <div className="bg-green-100 rounded-lg p-3 max-w-sm ml-auto">
+              <div className="bg-slate-100 rounded-lg p-3 max-w-xs ml-auto">
                 <p className="text-sm">
-                  Here is a complete lesson plan on multiplying decimal
-                  numbers...
+                  Can you generate 10 exercise questions on fractions for Grade
+                  4 students?
                 </p>
               </div>
-              <div className="bg-slate-100 rounded-lg p-3 max-w-xs">
+              <div className="bg-green-100 rounded-lg p-3 max-w-sm">
                 <p className="text-sm">
-                  Thanks! Can you provide additional practice exercises?
+                  Here are 10 fraction exercises for Grade 4: 1) What is 1/2 +
+                  1/4? 2) Simplify 4/8...
+                </p>
+              </div>
+              <div className="bg-slate-100 rounded-lg p-3 max-w-xs ml-auto">
+                <p className="text-sm">
+                  Perfect! Can you also create word problems using these
+                  fractions?
                 </p>
               </div>
             </div>
