@@ -6,19 +6,22 @@ Twiga is an AI-powered teaching companion designed specifically for Tanzanian ed
 
 ## Repository Overview
 
-**This repository contains only the landing page for Twiga** - not the main application. This is a marketing/registration website built with Next.js that:
+**This repository contains the landing page and admin dashboard for Twiga** - not the main application. This is a marketing/registration website built with Next.js that:
 
 - Showcases Twiga's features and benefits
-- Handles teacher registration through Google Forms integration
-- Provides information about the AI teaching companion
+- Handles teacher registration with database storage and validation
+- Provides an admin dashboard for managing registrations
 - Serves as the public-facing website for onboarding new users
+- Includes Docker support for easy deployment
 
 > 📱 **Looking for the main Twiga app?** The core WhatsApp-based AI teaching companion is available at [https://github.com/Tanzania-AI-Community/twiga](https://github.com/Tanzania-AI-Community/twiga).
 
 ## Landing Page Features
 
-- **Teacher Registration System**: Streamlined onboarding process with form validation
-- **Google Forms Integration**: Automatic data collection and management for new registrations
+- **Teacher Registration System**: Streamlined onboarding process with database storage and validation
+- **Admin Dashboard**: Secure admin interface for managing teacher registrations
+- **Database Integration**: PostgreSQL database with Drizzle ORM for data persistence
+- **Docker Support**: Easy deployment with Docker and Docker Compose
 - **Information Showcase**: Feature highlights, impact metrics, and testimonials
 
 ## 🚀 Quick Start
@@ -27,6 +30,7 @@ Twiga is an AI-powered teaching companion designed specifically for Tanzanian ed
 
 - Node.js 18+
 - pnpm (recommended) or npm
+- PostgreSQL (for local development) or Docker
 
 ### Installation
 
@@ -49,58 +53,73 @@ Twiga is an AI-powered teaching companion designed specifically for Tanzanian ed
    cp .env.example .env.local
    ```
 
-   Configure your Google Forms integration (see [Google Forms Setup](#google-forms-integration) below).
+   Configure your database and admin credentials. See [Environment Setup](#environment-setup) below.
 
-4. **Run the development server**
+4. **Option A: Development with Docker (Recommended)**
 
    ```bash
+   # Start the application with Docker (includes PostgreSQL)
+   pnpm run docker:start:dev
+   ```
+
+   **Option B: Local Development**
+
+   ```bash
+   # Make sure PostgreSQL is running locally, then:
+   pnpm run db:migrate
    pnpm dev
    ```
 
 5. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
-## 📝 Google Forms Integration
+## 🔧 Environment Setup
 
-The registration form integrates directly with Google Forms for data collection. This provides:
+The application uses environment variables for configuration. Create a `.env.local` file with the following:
 
-- **Zero backend required** - Forms submit directly to Google Sheets
-- **Real-time validation** - Client-side form validation with Zod
-- **Toast notifications** - User feedback for successful/failed submissions
-- **Accessibility** - Full keyboard navigation and screen reader support
+```env
+# Database Configuration
+DATABASE_URL=postgresql://postgres:password@localhost:5432/twiga_db
 
-### Setup Instructions
+# Admin Credentials
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=your_secure_password
+```
 
-1. **Create a Google Form** with these fields:
+### Database Setup
 
-   - Full Name (Short answer)
-   - School Name (Short answer)
-   - Email Address (Short answer)
-   - WhatsApp Number (Short answer)
+The application uses PostgreSQL with Drizzle ORM for data persistence. Teacher registrations are stored in the database with the following fields:
 
-2. **Configure environment variables** in `.env.local`:
-   ```env
-   NEXT_PUBLIC_GOOGLE_FORM_ACTION=your_form_action_url
-   NEXT_PUBLIC_GOOGLE_FORM_ENTRY_FULL_NAME=entry.123456789
-   NEXT_PUBLIC_GOOGLE_FORM_ENTRY_SCHOOL_NAME=entry.987654321
-   NEXT_PUBLIC_GOOGLE_FORM_ENTRY_EMAIL=entry.555666777
-   NEXT_PUBLIC_GOOGLE_FORM_ENTRY_WHATSAPP=entry.111222333
-   ```
+- Full Name
+- School Name
+- Email Address
+- WhatsApp Number
+- Registration Status (pending, approved, rejected)
+- Created/Updated timestamps
 
-For detailed setup instructions, see [GOOGLE_FORMS_SETUP.md](GOOGLE_FORMS_SETUP.md).
+### Admin Dashboard
+
+Access the admin dashboard at `/admin` to:
+
+- View all teacher registrations
+- Manage registration status
+- Export registration data
+- Monitor application usage
 
 ## 🛠️ Technology Stack
 
 - **Framework**: Next.js 15 with App Router
+- **Database**: PostgreSQL with Drizzle ORM
 - **Styling**: Tailwind CSS + shadcn/ui components
 - **Forms**: React Hook Form + Zod validation
 - **Icons**: Lucide React
 - **Notifications**: Sonner (toast notifications)
+- **Environment**: @t3-oss/env-nextjs for type-safe environment variables
 - **Deployment**: Vercel (recommended)
 
 ## 📁 Project Structure
 
-```
+```text
 twiga-site/
 ├── app/                    # Next.js App Router
 │   ├── globals.css        # Global styles
@@ -134,6 +153,19 @@ pnpm start
 
 # Lint code
 pnpm lint
+
+# Database operations
+pnpm run db:generate    # Generate migration files
+pnpm run db:migrate     # Run database migrations
+pnpm run db:studio      # Open Drizzle Studio
+
+# Docker operations
+pnpm run docker:start       # Start production containers
+pnpm run docker:start:dev   # Start development containers
+pnpm run docker:stop        # Stop all containers
+pnpm run docker:logs        # View container logs
+pnpm run docker:migrate     # Run migrations in Docker
+pnpm run docker:status      # Check container status
 ```
 
 ## 🤝 Contributing
