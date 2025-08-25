@@ -3,7 +3,6 @@ import { getRegistrations, adminLogout } from "@/lib/actions";
 import { adminDashboardSearchParamsCache } from "@/lib/search-params";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -12,8 +11,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Users, LogOut, Calendar, School } from "lucide-react";
+import { Users, LogOut, X, Check, Clock } from "lucide-react";
 import { AdminFilters } from "@/components/admin/AdminFilters";
+import { StatusActions } from "@/components/admin/StatusActions";
 import { Suspense } from "react";
 
 // Force dynamic rendering to ensure search params changes trigger re-renders
@@ -41,17 +41,6 @@ export default async function AdminDashboard({
     approved: registrations.filter((r) => r.status === "approved").length,
     rejected: registrations.filter((r) => r.status === "rejected").length,
   };
-
-  function getStatusBadge(status: string) {
-    switch (status) {
-      case "approved":
-        return <Badge className="bg-green-100 text-green-800">Approved</Badge>;
-      case "rejected":
-        return <Badge className="bg-red-100 text-red-800">Rejected</Badge>;
-      default:
-        return <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>;
-    }
-  }
 
   function formatDate(date: Date) {
     return new Intl.DateTimeFormat("en-US", {
@@ -99,7 +88,7 @@ export default async function AdminDashboard({
         {/* Stats Cards */}
         <div className="grid md:grid-cols-4 gap-6 mb-8">
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-600">
@@ -123,7 +112,7 @@ export default async function AdminDashboard({
                     {stats.pending}
                   </p>
                 </div>
-                <Calendar className="w-8 h-8 text-yellow-500" />
+                <Clock className="w-8 h-8 text-yellow-500" />
               </div>
             </CardContent>
           </Card>
@@ -137,7 +126,7 @@ export default async function AdminDashboard({
                     {stats.approved}
                   </p>
                 </div>
-                <School className="w-8 h-8 text-green-500" />
+                <Check className="w-8 h-8 text-green-500" />
               </div>
             </CardContent>
           </Card>
@@ -151,7 +140,7 @@ export default async function AdminDashboard({
                     {stats.rejected}
                   </p>
                 </div>
-                <Users className="w-8 h-8 text-red-500" />
+                <X className="w-8 h-8 text-red-500" />
               </div>
             </CardContent>
           </Card>
@@ -185,7 +174,7 @@ export default async function AdminDashboard({
                       <TableHead>School</TableHead>
                       <TableHead>Email</TableHead>
                       <TableHead>WhatsApp</TableHead>
-                      <TableHead>Status</TableHead>
+                      <TableHead>Status & Actions</TableHead>
                       <TableHead>Registration Date</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -199,7 +188,10 @@ export default async function AdminDashboard({
                         <TableCell>{registration.email}</TableCell>
                         <TableCell>{registration.whatsappNumber}</TableCell>
                         <TableCell>
-                          {getStatusBadge(registration.status)}
+                          <StatusActions
+                            registrationId={registration.id}
+                            currentStatus={registration.status}
+                          />
                         </TableCell>
                         <TableCell className="text-slate-500">
                           {formatDate(registration.createdAt)}

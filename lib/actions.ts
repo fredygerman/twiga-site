@@ -7,6 +7,7 @@ import { cookies } from "next/headers";
 import { eq, and, or, ilike, gte, lte, desc } from "drizzle-orm";
 import { env } from "@/env.mjs";
 import type { AdminDashboardSearchParams } from "./search-params";
+import { revalidatePath } from "next/cache";
 
 export async function submitRegistration(formData: FormData) {
   try {
@@ -133,8 +134,6 @@ export async function getRegistrations(
     const finalQuery =
       conditions.length > 0 ? query.where(and(...conditions)) : query;
 
-    console.log("Final Query:", finalQuery.toSQL().sql, "Filters:", filters);
-
     const allRegistrations = await finalQuery.orderBy(
       desc(registrations.createdAt)
     );
@@ -142,5 +141,26 @@ export async function getRegistrations(
   } catch (error) {
     console.error("Error fetching registrations:", error);
     return [];
+  }
+}
+
+export async function updateRegistrationStatus(
+  registrationId: number,
+  newStatus: "pending" | "approved" | "rejected"
+) {
+  try {
+    await db
+      .update(registrations)
+      .set({
+        status: newStatus,
+        updatedAt: new Date(),
+      })
+      .where(eq(registrations.id, registrationId));
+
+    revalidatePath("/admin/dashboard");
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating registration status:", error);
+    return { error: "Failed to update registration status" };
   }
 }
