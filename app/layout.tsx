@@ -4,6 +4,7 @@ import { Work_Sans, Open_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 const workSans = Work_Sans({
   subsets: ["latin"],
@@ -38,7 +39,7 @@ export default function RootLayout({
       className={`${workSans.variable} ${openSans.variable} antialiased`}
     >
       <body>
-        {children}
+        <NuqsAdapter>{children}</NuqsAdapter>
         <Toaster richColors />
         <Analytics />
       </body>

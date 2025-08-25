@@ -1,5 +1,6 @@
 import { checkAdminAuth } from "@/lib/auth";
 import { getRegistrations, adminLogout } from "@/lib/actions";
+import { adminDashboardSearchParamsCache } from "@/lib/search-params";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,11 +13,27 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Users, LogOut, Calendar, School } from "lucide-react";
+import { AdminFilters } from "@/components/admin/AdminFilters";
+import { Suspense } from "react";
 
-export default async function AdminDashboard() {
+// Force dynamic rendering to ensure search params changes trigger re-renders
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+export default async function AdminDashboard({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   await checkAdminAuth();
 
-  const registrations = await getRegistrations();
+  // Parse search params with defaults
+  const parsedSearchParams = adminDashboardSearchParamsCache.parse(
+    await searchParams
+  );
+
+  // Fetch filtered registrations
+  const registrations = await getRegistrations(parsedSearchParams);
 
   const stats = {
     total: registrations.length,
@@ -74,6 +91,11 @@ export default async function AdminDashboard() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
+        {/* Filters */}
+        <Suspense fallback={<div>Loading filters...</div>}>
+          <AdminFilters />
+        </Suspense>
+
         {/* Stats Cards */}
         <div className="grid md:grid-cols-4 gap-6 mb-8">
           <Card>

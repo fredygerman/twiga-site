@@ -2,11 +2,11 @@
 
 import { db } from "@/db";
 import { registrations } from "@/db/schema";
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import { eq } from "drizzle-orm";
+import { eq, and, or, ilike, gte, lte, desc } from "drizzle-orm";
 import { env } from "@/env.mjs";
+import type { AdminDashboardSearchParams } from "./search-params";
 
 export async function submitRegistration(formData: FormData) {
   try {
@@ -89,9 +89,55 @@ export async function adminLogout() {
   redirect("/admin");
 }
 
-export async function getRegistrations() {
+export async function getRegistrations(
+  filters?: Partial<AdminDashboardSearchParams>
+) {
   try {
-    const allRegistrations = await db.select().from(registrations);
+    const query = db.select().from(registrations);
+
+    // Build where conditions
+    const conditions = [];
+
+    // Search filter (searches in fullName, schoolName, and email)
+    if (filters?.search && filters.search.trim()) {
+      const searchTerm = `%${filters.search.trim()}%`;
+      conditions.push(
+        or(
+          ilike(registrations.fullName, searchTerm),
+          ilike(registrations.schoolName, searchTerm),
+          ilike(registrations.email, searchTerm)
+        )
+      );
+    }
+
+    // Status filter
+    if (filters?.status && filters.status !== "all") {
+      conditions.push(eq(registrations.status, filters.status));
+    }
+
+    // Date range filters
+    if (filters?.startDate) {
+      conditions.push(
+        gte(registrations.createdAt, new Date(filters.startDate))
+      );
+    }
+
+    if (filters?.endDate) {
+      // Add 1 day to endDate to include the entire day
+      const endDate = new Date(filters.endDate);
+      endDate.setDate(endDate.getDate() + 1);
+      conditions.push(lte(registrations.createdAt, endDate));
+    }
+
+    // Apply conditions if any exist
+    const finalQuery =
+      conditions.length > 0 ? query.where(and(...conditions)) : query;
+
+    console.log("Final Query:", finalQuery.toSQL().sql, "Filters:", filters);
+
+    const allRegistrations = await finalQuery.orderBy(
+      desc(registrations.createdAt)
+    );
     return allRegistrations;
   } catch (error) {
     console.error("Error fetching registrations:", error);
