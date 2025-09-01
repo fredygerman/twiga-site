@@ -4,8 +4,15 @@ import {
   parseAsStringEnum,
 } from "nuqs/server";
 
-// Registration status enum
-const statusOptions = ["all", "pending", "approved", "rejected"] as const;
+// User status enum (matching your database schema)
+const statusOptions = [
+  "all",
+  "blocked",
+  "rate_limited",
+  "new",
+  "onboarding",
+  "active",
+] as const;
 
 // Helper function to get default date range (last 30 days)
 function getDefaultDateRange() {
@@ -26,7 +33,7 @@ export const adminDashboardSearchParamsCache = createSearchParamsCache({
   // Search filter
   search: parseAsString.withDefault(""),
 
-  // Status filter
+  // Status filter (using user states)
   status: parseAsStringEnum([...statusOptions]).withDefault("all"),
 
   // Date range filters
@@ -36,7 +43,7 @@ export const adminDashboardSearchParamsCache = createSearchParamsCache({
 
 export type AdminDashboardSearchParams = {
   search: string;
-  status: "all" | "pending" | "approved" | "rejected";
+  status: "all" | "blocked" | "rate_limited" | "new" | "onboarding" | "active";
   startDate: string;
   endDate: string;
 };

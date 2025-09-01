@@ -1,28 +1,11 @@
 services:
-  # PostgreSQL Database
-  postgres:
-    image: postgres:15
-    container_name: twiga-postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-twiga_db}
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
-    ports:
-      - "${POSTGRES_PORT:-5432}:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./init-db:/docker-entrypoint-initdb.d
-    networks:
-      - twiga-network
-
   # Next.js Application
   app:
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:password@postgres:5432/twiga_db}
+        DATABASE_URL: ${DATABASE_URL}
         ADMIN_USERNAME: ${ADMIN_USERNAME:-twiga_admin}
         ADMIN_PASSWORD: ${ADMIN_PASSWORD:-twiga2024!}
     container_name: twiga-app
@@ -31,11 +14,9 @@ services:
       - "${APP_PORT:-3000}:3000"
     environment:
       - NODE_ENV=${NODE_ENV:-production}
-      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:password@postgres:5432/twiga_db}
+      - DATABASE_URL=${DATABASE_URL}
       - ADMIN_USERNAME=${ADMIN_USERNAME:-twiga_admin}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD:-twiga2024!}
-    depends_on:
-      - postgres
     networks:
       - twiga-network
     volumes:
@@ -49,7 +30,7 @@ services:
       context: .
       dockerfile: Dockerfile.dev
       args:
-        DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:password@postgres:5432/twiga_db}
+        DATABASE_URL: ${DATABASE_URL}
         ADMIN_USERNAME: ${ADMIN_USERNAME:-twiga_admin}
         ADMIN_PASSWORD: ${ADMIN_PASSWORD:-twiga2024!}
     container_name: twiga-dev
@@ -58,11 +39,9 @@ services:
       - "${APP_PORT:-3000}:3000"
     environment:
       - NODE_ENV=development
-      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:password@postgres:5432/twiga_db}
+      - DATABASE_URL=${DATABASE_URL}
       - ADMIN_USERNAME=${ADMIN_USERNAME:-twiga_admin}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD:-twiga2024!}
-    depends_on:
-      - postgres
     networks:
       - twiga-network
     volumes:
@@ -70,9 +49,6 @@ services:
       - /app/node_modules
     profiles:
       - dev
-
-volumes:
-  postgres_data:
 
 networks:
   twiga-network:

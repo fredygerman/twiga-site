@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { registrations } from "@/db/schema";
+import { users, registrations } from "@/db/schema";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { eq, and, or, ilike, gte, lte, desc } from "drizzle-orm";
@@ -9,6 +9,7 @@ import { env } from "@/env.mjs";
 import type { AdminDashboardSearchParams } from "./search-params";
 import { revalidatePath } from "next/cache";
 
+// Keep registration functionality for backward compatibility
 export async function submitRegistration(formData: FormData) {
   try {
     const fullName = formData.get("fullName") as string;
@@ -90,77 +91,72 @@ export async function adminLogout() {
   redirect("/admin");
 }
 
-export async function getRegistrations(
-  filters?: Partial<AdminDashboardSearchParams>
-) {
+export async function getUsers(filters?: Partial<AdminDashboardSearchParams>) {
   try {
-    const query = db.select().from(registrations);
+    const query = db.select().from(users);
 
     // Build where conditions
     const conditions = [];
 
-    // Search filter (searches in fullName, schoolName, and email)
+    // Search filter (searches in name, wa_id, school_name, and region)
     if (filters?.search && filters.search.trim()) {
       const searchTerm = `%${filters.search.trim()}%`;
       conditions.push(
         or(
-          ilike(registrations.fullName, searchTerm),
-          ilike(registrations.schoolName, searchTerm),
-          ilike(registrations.email, searchTerm)
+          ilike(users.name, searchTerm),
+          ilike(users.wa_id, searchTerm),
+          ilike(users.school_name, searchTerm),
+          ilike(users.region, searchTerm)
         )
       );
     }
 
-    // Status filter
+    // Status filter (using user state)
     if (filters?.status && filters.status !== "all") {
-      conditions.push(eq(registrations.status, filters.status));
+      conditions.push(eq(users.state, filters.status));
     }
 
     // Date range filters
     if (filters?.startDate) {
-      conditions.push(
-        gte(registrations.createdAt, new Date(filters.startDate))
-      );
+      conditions.push(gte(users.created_at, new Date(filters.startDate)));
     }
 
     if (filters?.endDate) {
       // Add 1 day to endDate to include the entire day
       const endDate = new Date(filters.endDate);
       endDate.setDate(endDate.getDate() + 1);
-      conditions.push(lte(registrations.createdAt, endDate));
+      conditions.push(lte(users.created_at, endDate));
     }
 
     // Apply conditions if any exist
     const finalQuery =
       conditions.length > 0 ? query.where(and(...conditions)) : query;
 
-    const allRegistrations = await finalQuery.orderBy(
-      desc(registrations.createdAt)
-    );
-    return allRegistrations;
+    const allUsers = await finalQuery.orderBy(desc(users.created_at));
+    return allUsers;
   } catch (error) {
-    console.error("Error fetching registrations:", error);
+    console.error("Error fetching users:", error);
     return [];
   }
 }
 
-export async function updateRegistrationStatus(
-  registrationId: number,
-  newStatus: "pending" | "approved" | "rejected"
+export async function updateUserState(
+  userId: number,
+  newState: "blocked" | "rate_limited" | "new" | "onboarding" | "active"
 ) {
   try {
     await db
-      .update(registrations)
+      .update(users)
       .set({
-        status: newStatus,
-        updatedAt: new Date(),
+        state: newState,
+        updated_at: new Date(),
       })
-      .where(eq(registrations.id, registrationId));
+      .where(eq(users.id, userId));
 
     revalidatePath("/admin/dashboard");
     return { success: true };
   } catch (error) {
-    console.error("Error updating registration status:", error);
-    return { error: "Failed to update registration status" };
+    console.error("Error updating user state:", error);
+    return { error: "Failed to update user state" };
   }
 }

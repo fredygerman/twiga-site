@@ -27,10 +27,12 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 
 const statusOptions = [
-  { value: "all", label: "All Status" },
-  { value: "pending", label: "Pending" },
-  { value: "approved", label: "Approved" },
-  { value: "rejected", label: "Rejected" },
+  { value: "all", label: "All States" },
+  { value: "active", label: "Active" },
+  { value: "onboarding", label: "Onboarding" },
+  { value: "new", label: "New" },
+  { value: "blocked", label: "Blocked" },
+  { value: "rate_limited", label: "Rate Limited" },
 ];
 
 export function AdminFilters() {
