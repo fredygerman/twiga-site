@@ -29,6 +29,8 @@ import {
   MessageSquare,
   User,
   Hash,
+  UserMinus,
+  Eye,
 } from "lucide-react";
 
 interface User {
@@ -109,6 +111,10 @@ export function UserDetailDialog({
         return <Clock className="w-4 h-4 text-blue-500" />;
       case "new":
         return <Users className="w-4 h-4 text-gray-500" />;
+      case "inactive":
+        return <UserMinus className="w-4 h-4 text-gray-400" />;
+      case "in_review":
+        return <Eye className="w-4 h-4 text-purple-500" />;
       default:
         return <Users className="w-4 h-4 text-gray-500" />;
     }
@@ -126,6 +132,10 @@ export function UserDetailDialog({
         return "bg-blue-100 text-blue-800 border-blue-200";
       case "new":
         return "bg-gray-100 text-gray-800 border-gray-200";
+      case "inactive":
+        return "bg-gray-50 text-gray-600 border-gray-300";
+      case "in_review":
+        return "bg-purple-100 text-purple-800 border-purple-200";
       default:
         return "bg-gray-100 text-gray-800 border-gray-200";
     }

@@ -16,6 +16,8 @@ export const userStates = [
   "new",
   "onboarding",
   "active",
+  "inactive",
+  "in_review",
 ] as const;
 export const onboardingStates = [
   "new",

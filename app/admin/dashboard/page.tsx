@@ -10,6 +10,8 @@ import {
   Clock,
   UserX,
   AlertTriangle,
+  UserMinus,
+  Eye,
 } from "lucide-react";
 import { AdminFilters } from "@/components/admin/AdminFilters";
 import { UserTable } from "@/components/admin/UserTable";
@@ -41,6 +43,8 @@ export default async function AdminDashboard({
     new: users.filter((u) => u.state === "new").length,
     blocked: users.filter((u) => u.state === "blocked").length,
     rate_limited: users.filter((u) => u.state === "rate_limited").length,
+    inactive: users.filter((u) => u.state === "inactive").length,
+    in_review: users.filter((u) => u.state === "in_review").length,
   };
 
   return (
@@ -79,7 +83,7 @@ export default async function AdminDashboard({
         </Suspense>
 
         {/* Stats Cards */}
-        <div className="grid md:grid-cols-6 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 mb-8">
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -166,6 +170,36 @@ export default async function AdminDashboard({
                   </p>
                 </div>
                 <AlertTriangle className="w-6 h-6 text-yellow-500" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-slate-600">Inactive</p>
+                  <p className="text-2xl font-bold text-gray-500">
+                    {stats.inactive}
+                  </p>
+                </div>
+                <UserMinus className="w-6 h-6 text-gray-400" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-slate-600">
+                    In Review
+                  </p>
+                  <p className="text-2xl font-bold text-purple-600">
+                    {stats.in_review}
+                  </p>
+                </div>
+                <Eye className="w-6 h-6 text-purple-500" />
               </div>
             </CardContent>
           </Card>

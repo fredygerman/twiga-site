@@ -142,7 +142,14 @@ export async function getUsers(filters?: Partial<AdminDashboardSearchParams>) {
 
 export async function updateUserState(
   userId: number,
-  newState: "blocked" | "rate_limited" | "new" | "onboarding" | "active"
+  newState:
+    | "blocked"
+    | "rate_limited"
+    | "new"
+    | "onboarding"
+    | "active"
+    | "inactive"
+    | "in_review"
 ) {
   try {
     await db
@@ -158,5 +165,24 @@ export async function updateUserState(
   } catch (error) {
     console.error("Error updating user state:", error);
     return { error: "Failed to update user state" };
+  }
+}
+
+// Approving users in review
+export async function approveUser(userId: number) {
+  try {
+    await db
+      .update(users)
+      .set({
+        state: "new", // When approved, user state becomes "new"
+        updated_at: new Date(),
+      })
+      .where(eq(users.id, userId));
+
+    revalidatePath("/admin/dashboard");
+    return { success: true };
+  } catch (error) {
+    console.error("Error approving user:", error);
+    return { error: "Failed to approve user" };
   }
 }

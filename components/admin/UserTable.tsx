@@ -15,7 +15,15 @@ import {
 } from "@/components/admin/ColumnToggle";
 import { UserDetailDialog } from "@/components/admin/UserDetailDialog";
 import { StatusActions } from "@/components/admin/StatusActions";
-import { Check, Clock, UserX, AlertTriangle, Users } from "lucide-react";
+import {
+  Check,
+  Clock,
+  UserX,
+  AlertTriangle,
+  Users,
+  UserMinus,
+  Eye,
+} from "lucide-react";
 
 interface User {
   id: number;
@@ -78,6 +86,10 @@ export function UserTable({ users }: UserTableProps) {
         return <Clock className="w-4 h-4 text-blue-500" />;
       case "new":
         return <Users className="w-4 h-4 text-gray-500" />;
+      case "inactive":
+        return <UserMinus className="w-4 h-4 text-gray-400" />;
+      case "in_review":
+        return <Eye className="w-4 h-4 text-purple-500" />;
       default:
         return <Users className="w-4 h-4 text-gray-500" />;
     }
@@ -95,6 +107,10 @@ export function UserTable({ users }: UserTableProps) {
         return "text-blue-600";
       case "new":
         return "text-gray-600";
+      case "inactive":
+        return "text-gray-500";
+      case "in_review":
+        return "text-purple-600";
       default:
         return "text-gray-600";
     }
