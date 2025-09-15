@@ -23,7 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Phone, Mail, School, User, CheckCircle } from "lucide-react";
+import { Phone, School, User, CheckCircle } from "lucide-react";
 
 // Define the form schema with validation
 const FormSchema = z.object({
@@ -32,9 +32,6 @@ const FormSchema = z.object({
   }),
   schoolName: z.string().min(2, {
     message: "School name must be at least 2 characters.",
-  }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
   }),
   whatsappNumber: z
     .string()
@@ -67,7 +64,6 @@ export default function Registration() {
     defaultValues: {
       fullName: "",
       schoolName: "",
-      email: "",
       whatsappNumber: "",
     },
   });
@@ -78,7 +74,6 @@ export default function Registration() {
         const formData = new FormData();
         formData.append("fullName", data.fullName);
         formData.append("schoolName", data.schoolName);
-        formData.append("email", data.email);
         formData.append("whatsappNumber", data.whatsappNumber);
 
         const result = await submitRegistration(formData);
@@ -207,28 +202,6 @@ export default function Registration() {
                       )}
                     />
                   </div>
-
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex items-center space-x-2">
-                          <Mail className="w-4 h-4" />
-                          <span>Email Address</span>
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="email"
-                            placeholder="your.email@example.com"
-                            disabled={isPending}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
 
                   <FormField
                     control={form.control}

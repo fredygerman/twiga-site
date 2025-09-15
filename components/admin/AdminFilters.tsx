@@ -31,8 +31,10 @@ const statusOptions = [
   { value: "active", label: "Active" },
   { value: "onboarding", label: "Onboarding" },
   { value: "new", label: "New" },
+  { value: "in_review", label: "In Review" },
   { value: "blocked", label: "Blocked" },
   { value: "rate_limited", label: "Rate Limited" },
+  { value: "inactive", label: "Inactive" },
 ];
 
 export function AdminFilters() {
@@ -143,7 +145,7 @@ export function AdminFilters() {
                 Search
               </label>
               <Input
-                placeholder="Search by name, school, or email..."
+                placeholder="Search by name, school, or WhatsApp..."
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
                 className="w-full"

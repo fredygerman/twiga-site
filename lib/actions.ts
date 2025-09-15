@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db";
-import { users, registrations } from "@/db/schema";
+import { users } from "@/db/schema";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { eq, and, or, ilike, gte, lte, desc } from "drizzle-orm";
@@ -9,52 +9,41 @@ import { env } from "@/env.mjs";
 import type { AdminDashboardSearchParams } from "./search-params";
 import { revalidatePath } from "next/cache";
 
-// Keep registration functionality for backward compatibility
+// Create user in review status
 export async function submitRegistration(formData: FormData) {
   try {
     const fullName = formData.get("fullName") as string;
     const schoolName = formData.get("schoolName") as string;
-    const email = formData.get("email") as string;
     const whatsappNumber = formData.get("whatsappNumber") as string;
 
     // Validate required fields
-    if (!fullName || !schoolName || !email || !whatsappNumber) {
+    if (!fullName || !schoolName || !whatsappNumber) {
       return { error: "Please fill in all required fields" };
     }
 
-    // Check for existing email
-    const existingEmail = await db
+    // Check for existing WhatsApp number (primary identifier)
+    const existingUser = await db
       .select()
-      .from(registrations)
-      .where(eq(registrations.email, email))
+      .from(users)
+      .where(eq(users.wa_id, whatsappNumber))
       .limit(1);
 
-    if (existingEmail.length > 0) {
+    if (existingUser.length > 0) {
       return {
-        error: "A registration with this email has already been submitted.",
+        error: "A user with this WhatsApp number has already been registered.",
       };
     }
 
-    // Check for existing WhatsApp number
-    const existingPhone = await db
-      .select()
-      .from(registrations)
-      .where(eq(registrations.whatsappNumber, whatsappNumber))
-      .limit(1);
-
-    if (existingPhone.length > 0) {
-      return {
-        error:
-          "A registration with this WhatsApp number has already been submitted.",
-      };
-    }
-
-    // Insert into database
-    await db.insert(registrations).values({
-      fullName,
-      schoolName,
-      email,
-      whatsappNumber,
+    // Insert into users table with in_review status
+    await db.insert(users).values({
+      name: fullName,
+      wa_id: whatsappNumber,
+      school_name: schoolName,
+      state: "in_review",
+      onboarding_state: "new",
+      role: "teacher",
+      created_at: new Date(),
+      updated_at: new Date(),
     });
 
     return { success: true };
@@ -174,7 +163,7 @@ export async function approveUser(userId: number) {
     await db
       .update(users)
       .set({
-        state: "new", // When approved, user state becomes "new"
+        state: "active", // When approved, user state becomes "active"
         updated_at: new Date(),
       })
       .where(eq(users.id, userId));
@@ -184,5 +173,24 @@ export async function approveUser(userId: number) {
   } catch (error) {
     console.error("Error approving user:", error);
     return { error: "Failed to approve user" };
+  }
+}
+
+// Rejecting users in review
+export async function rejectUser(userId: number) {
+  try {
+    await db
+      .update(users)
+      .set({
+        state: "blocked", // When rejected, user state becomes "blocked"
+        updated_at: new Date(),
+      })
+      .where(eq(users.id, userId));
+
+    revalidatePath("/admin/dashboard");
+    return { success: true };
+  } catch (error) {
+    console.error("Error rejecting user:", error);
+    return { error: "Failed to reject user" };
   }
 }
