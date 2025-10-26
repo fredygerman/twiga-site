@@ -117,11 +117,13 @@ export default function SiteFooter() {
 
         <div className="border-t border-slate-700 mt-8 pt-8 text-center text-slate-400">
           <div className="flex justify-center space-x-6 mb-4">
-            <Link href="#" className="hover:text-white transition-colors">
+            <Link
+              href="https://github.com/Tanzania-AI-Community/twiga/blob/development/docs/PRIVACY.md"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white transition-colors"
+            >
               Privacy Policy
-            </Link>
-            <Link href="#" className="hover:text-white transition-colors">
-              Terms of Service
             </Link>
           </div>
           <p>
