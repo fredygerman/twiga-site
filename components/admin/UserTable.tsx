@@ -78,14 +78,14 @@ export function UserTable({ users }: UserTableProps) {
     switch (state) {
       case "active":
         return <Check className="w-4 h-4 text-green-500" />;
+      case "approved":
+        return <Check className="w-4 h-4 text-blue-500" />;
       case "blocked":
         return <UserX className="w-4 h-4 text-red-500" />;
       case "rate_limited":
         return <AlertTriangle className="w-4 h-4 text-yellow-500" />;
       case "onboarding":
         return <Clock className="w-4 h-4 text-blue-500" />;
-      case "new":
-        return <Users className="w-4 h-4 text-gray-500" />;
       case "inactive":
         return <UserMinus className="w-4 h-4 text-gray-400" />;
       case "in_review":
@@ -99,14 +99,14 @@ export function UserTable({ users }: UserTableProps) {
     switch (state) {
       case "active":
         return "text-green-600";
+      case "approved":
+        return "text-blue-600";
       case "blocked":
         return "text-red-600";
       case "rate_limited":
         return "text-yellow-600";
       case "onboarding":
         return "text-blue-600";
-      case "new":
-        return "text-gray-600";
       case "inactive":
         return "text-gray-500";
       case "in_review":

@@ -13,7 +13,7 @@ import {
 export const userStates = [
   "blocked",
   "rate_limited",
-  "new",
+  "approved",
   "onboarding",
   "active",
   "inactive",
@@ -30,7 +30,7 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 50 }),
   wa_id: varchar("wa_id", { length: 20 }).notNull().unique(),
-  state: varchar("state", { length: 50 }).default("new").notNull(),
+  state: varchar("state", { length: 50 }).default("approved").notNull(),
   onboarding_state: varchar("onboarding_state", { length: 50 }).default("new"),
   role: varchar("role", { length: 20 }).default("teacher").notNull(),
   class_info: json("class_info").$type<Record<string, string[]>>(),
