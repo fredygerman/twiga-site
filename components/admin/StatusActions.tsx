@@ -15,7 +15,7 @@ export function StatusActions({ userId, currentState }: StatusActionsProps) {
   const [stateLoading, setStateLoading] = useState<string | null>(null);
 
   const handleStateUpdate = async (
-    newState: "blocked" | "rate_limited" | "new" | "onboarding" | "active"
+    newState: "blocked" | "rate_limited" | "approved" | "onboarding" | "active"
   ) => {
     setStateLoading(newState);
 
@@ -36,16 +36,16 @@ export function StatusActions({ userId, currentState }: StatusActionsProps) {
 
   return (
     <div className="flex items-center gap-1">
-      {currentState !== "active" && (
+      {currentState !== "approved" && (
         <Button
           size="sm"
           variant="outline"
           className="h-7 px-2 text-green-600 hover:text-green-700 hover:bg-green-50"
-          onClick={() => handleStateUpdate("active")}
+          onClick={() => handleStateUpdate("approved")}
           disabled={stateLoading !== null}
-          title="Activate user"
+          title="Approve user"
         >
-          {stateLoading === "active" ? (
+          {stateLoading === "approved" ? (
             <Loader2 className="w-3 h-3 animate-spin" />
           ) : (
             <UserCheck className="w-3 h-3" />

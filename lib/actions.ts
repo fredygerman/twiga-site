@@ -134,7 +134,7 @@ export async function updateUserState(
   newState:
     | "blocked"
     | "rate_limited"
-    | "new"
+    | "approved"
     | "onboarding"
     | "active"
     | "inactive"
@@ -163,7 +163,7 @@ export async function approveUser(userId: number) {
     await db
       .update(users)
       .set({
-        state: "active", // When approved, user state becomes "active"
+        state: "approved", // When approved, user state becomes "approved"
         updated_at: new Date(),
       })
       .where(eq(users.id, userId));
