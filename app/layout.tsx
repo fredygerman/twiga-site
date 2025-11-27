@@ -40,7 +40,7 @@ export default function RootLayout({
     >
       <body>
         <NuqsAdapter>{children}</NuqsAdapter>
-        <Toaster richColors />
+        <Toaster richColors position="top-center" />
         <Analytics />
       </body>
     </html>

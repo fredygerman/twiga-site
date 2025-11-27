@@ -258,6 +258,7 @@ export function UserTable({ users }: UserTableProps) {
                     <StatusActions
                       userId={user.id!}
                       currentState={user.state}
+                      onViewDetails={() => handleUserClick(user)}
                     />
                   </TableCell>
                 )}

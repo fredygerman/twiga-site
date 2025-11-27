@@ -3,20 +3,50 @@
 import { useState } from "react";
 import { updateUserState } from "@/lib/actions";
 import { Button } from "@/components/ui/button";
-import { Loader2, UserX, AlertTriangle, UserCheck } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import {
+  Loader2,
+  UserX,
+  UserCheck,
+  MoreHorizontal,
+  AlertTriangle,
+  Clock,
+  UserMinus,
+  Eye,
+  Zap,
+  ExternalLink,
+} from "lucide-react";
 import { toast } from "sonner";
+
+type UserState =
+  | "blocked"
+  | "rate_limited"
+  | "approved"
+  | "onboarding"
+  | "active"
+  | "inactive"
+  | "in_review";
 
 interface StatusActionsProps {
   userId: number;
   currentState: string;
+  onViewDetails?: () => void;
 }
 
-export function StatusActions({ userId, currentState }: StatusActionsProps) {
+export function StatusActions({
+  userId,
+  currentState,
+  onViewDetails,
+}: StatusActionsProps) {
   const [stateLoading, setStateLoading] = useState<string | null>(null);
 
-  const handleStateUpdate = async (
-    newState: "blocked" | "rate_limited" | "approved" | "onboarding" | "active"
-  ) => {
+  const handleStateUpdate = async (newState: UserState) => {
     setStateLoading(newState);
 
     try {
@@ -34,9 +64,65 @@ export function StatusActions({ userId, currentState }: StatusActionsProps) {
     }
   };
 
+  // Can only approve users who are in_review
+  const canApprove = currentState === "in_review";
+  // Can only block users who are not already blocked
+  const canBlock = currentState !== "blocked";
+
+  // Other states available in dropdown (excluding current state and main actions)
+  const allOtherStates: {
+    state: UserState;
+    label: string;
+    icon: React.ReactNode;
+  }[] = [
+    {
+      state: "active",
+      label: "Set Active",
+      icon: <Zap className="w-4 h-4 text-green-500" />,
+    },
+    {
+      state: "inactive",
+      label: "Set Inactive",
+      icon: <UserMinus className="w-4 h-4 text-gray-400" />,
+    },
+    {
+      state: "onboarding",
+      label: "Set Onboarding",
+      icon: <Clock className="w-4 h-4 text-blue-500" />,
+    },
+    {
+      state: "rate_limited",
+      label: "Rate Limit",
+      icon: <AlertTriangle className="w-4 h-4 text-yellow-500" />,
+    },
+    {
+      state: "in_review",
+      label: "Set In Review",
+      icon: <Eye className="w-4 h-4 text-purple-500" />,
+    },
+  ];
+
+  const otherStates = allOtherStates.filter(
+    (item) => item.state !== currentState
+  );
+
   return (
     <div className="flex items-center gap-1">
-      {currentState !== "approved" && (
+      {/* Open/View details button */}
+      {onViewDetails && (
+        <Button
+          size="sm"
+          variant="outline"
+          className="h-7 px-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+          onClick={onViewDetails}
+          title="View details"
+        >
+          <ExternalLink className="w-3 h-3" />
+        </Button>
+      )}
+
+      {/* Approve button - only visible for users in_review */}
+      {canApprove && (
         <Button
           size="sm"
           variant="outline"
@@ -53,7 +139,8 @@ export function StatusActions({ userId, currentState }: StatusActionsProps) {
         </Button>
       )}
 
-      {currentState !== "blocked" && (
+      {/* Block button - visible for all non-blocked users */}
+      {canBlock && (
         <Button
           size="sm"
           variant="outline"
@@ -70,22 +157,48 @@ export function StatusActions({ userId, currentState }: StatusActionsProps) {
         </Button>
       )}
 
-      {currentState !== "rate_limited" && (
-        <Button
-          size="sm"
-          variant="outline"
-          className="h-7 px-2 text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50"
-          onClick={() => handleStateUpdate("rate_limited")}
-          disabled={stateLoading !== null}
-          title="Rate limit user"
-        >
-          {stateLoading === "rate_limited" ? (
-            <Loader2 className="w-3 h-3 animate-spin" />
-          ) : (
-            <AlertTriangle className="w-3 h-3" />
+      {/* Dropdown for other state changes */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-7 px-2"
+            disabled={stateLoading !== null}
+            title="More actions"
+          >
+            {stateLoading && !["approved", "blocked"].includes(stateLoading) ? (
+              <Loader2 className="w-3 h-3 animate-spin" />
+            ) : (
+              <MoreHorizontal className="w-3 h-3" />
+            )}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-48">
+          {otherStates.map((item, index) => (
+            <DropdownMenuItem
+              key={item.state}
+              onClick={() => handleStateUpdate(item.state)}
+              className="cursor-pointer"
+            >
+              <span className="mr-2">{item.icon}</span>
+              {item.label}
+            </DropdownMenuItem>
+          ))}
+          {currentState === "blocked" && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => handleStateUpdate("approved")}
+                className="cursor-pointer"
+              >
+                <UserCheck className="w-4 h-4 text-green-500 mr-2" />
+                Unblock (Approve)
+              </DropdownMenuItem>
+            </>
           )}
-        </Button>
-      )}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }
