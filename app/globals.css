@@ -200,3 +200,19 @@
 .twiga-dot-bounce-delay-2 {
   animation-delay: 0.4s;
 }
+
+/* Sponsors / partners carousel: per-card entrance (stagger via inline delay) */
+@keyframes twiga-sponsor-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(1rem) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.twiga-sponsor-card-enter {
+  animation: twiga-sponsor-card-enter 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
