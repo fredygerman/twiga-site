@@ -286,7 +286,7 @@ export default function SponsorsPartners() {
         ) : (
           <>
             <div
-              className="mb-2 flex flex-wrap items-center justify-between gap-4 border-b border-twiga-cream-dark pb-1"
+              className="mb-2 flex flex-wrap items-center gap-4 border-b border-twiga-cream-dark pb-1"
               role="tablist"
               aria-label="Sponsors and partners"
             >
@@ -322,10 +322,6 @@ export default function SponsorsPartners() {
                   Partners
                 </button>
               </div>
-              <p className="text-xs font-light text-twiga-text-muted">
-                Showing {view === "sponsors" ? "sponsors" : "partners"} ·
-                alternates every {Math.round(ROTATE_MS / 1000)}s
-              </p>
             </div>
 
             <div
