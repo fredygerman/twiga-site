@@ -58,7 +58,7 @@ const steps = [
   {
     n: 3,
     title: "Start planning lessons",
-    desc: "Chat with Twiga on WhatsApp — just like texting a colleague.",
+    desc: "Chat with Twiga on WhatsApp, just like texting a colleague.",
   },
 ];
 
@@ -163,7 +163,7 @@ export default function Registration() {
             </h2>
             <p className="mt-4 max-w-md font-light leading-relaxed text-twiga-text-muted">
               Registration takes under two minutes. Your account is activated
-              directly through WhatsApp — no app to install.
+              directly through WhatsApp, with no app to install.
             </p>
             <ol className="mt-10 flex flex-col gap-6">
               {steps.map((s) => (

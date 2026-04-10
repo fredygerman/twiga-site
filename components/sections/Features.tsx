@@ -16,7 +16,7 @@ const features = [
   {
     num: "03",
     title: "Access Teaching Resources",
-    body: "Download worksheets, quizzes, and learning aids. All content follows TIE curriculum standards — always relevant.",
+    body: "Download worksheets, quizzes, and learning aids. All content follows TIE curriculum standards, always relevant.",
     icon: FolderOpen,
   },
 ];
@@ -38,8 +38,8 @@ export default function Features() {
             classrooms, powered by AI
           </h2>
           <p className="mt-4 max-w-[520px] font-light leading-relaxed text-twiga-text-muted">
-            Every feature is built around the realities of teaching in Tanzania
-            — the TIE curriculum, Swahili, and the constraints teachers actually
+            Every feature is built around the realities of teaching in Tanzania:
+            the TIE curriculum, Swahili, and the constraints teachers actually
             face.
           </p>
         </header>

@@ -20,7 +20,7 @@ export default function SiteFooter() {
               </span>
             </div>
             <p className="max-w-[260px] text-sm font-light leading-relaxed text-twiga-cream/50">
-              Empowering Tanzanian education with AI — one teacher at a time.
+              Empowering Tanzanian education with AI, one teacher at a time.
             </p>
           </div>
           <div>

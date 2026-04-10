@@ -55,7 +55,7 @@ const sponsors: Entry[] = [
 const partners: Entry[] = [
   {
     name: "KTH AI Society",
-    desc: "A participatory community for everyone into AI — KTH Royal Institute of Technology",
+    desc: "A participatory community for everyone into AI, KTH Royal Institute of Technology",
     badge: "Development Partner",
     url: "https://kthais.com/",
     logo: "/logos/kthis.png",

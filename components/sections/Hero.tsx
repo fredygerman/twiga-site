@@ -31,7 +31,7 @@ export default function Hero() {
           </h1>
           <p className="twiga-fade-up twiga-fade-up-delay-3 mt-5 max-w-[440px] text-[1.05rem] font-light leading-relaxed text-twiga-text-muted">
             Empowering Tanzanian teachers with AI-powered lesson support,
-            resources, and guidance — anytime, anywhere.
+            resources, and guidance, anytime, anywhere.
           </p>
           <div className="twiga-fade-up twiga-fade-up-delay-4 mt-10 flex flex-wrap items-center gap-4">
             <Link
@@ -39,7 +39,7 @@ export default function Hero() {
               className="inline-flex items-center gap-2 rounded-lg bg-twiga-forest px-7 py-3.5 text-sm font-semibold text-twiga-cream transition-all hover:bg-twiga-forest-mid hover:-translate-y-px"
             >
               <span aria-hidden>💬</span>
-              Join the Beta — It&apos;s Free
+              Join the Beta, it&apos;s free
             </Link>
             <Link
               href="#features"
