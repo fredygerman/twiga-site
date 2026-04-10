@@ -9,7 +9,7 @@ import SiteFooter from "@/components/sections/SiteFooter";
 
 export default function TwigaLandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
+    <div className="min-h-screen bg-twiga-cream bg-twiga-texture text-twiga-text">
       <SiteHeader />
       <Hero />
       <Features />

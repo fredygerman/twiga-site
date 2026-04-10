@@ -1,75 +1,100 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { MessageCircle, Users } from "lucide-react";
 import Link from "next/link";
+import { Github, MessageCircle } from "lucide-react";
+
+const contributeItems = [
+  "Code development & bug fixes",
+  "Educational content creation",
+  "Translation & localization",
+  "Testing & feedback",
+];
 
 export default function OpenSourceCTA() {
   return (
-    <section className="bg-gradient-to-r from-slate-50 to-green-50 rounded-xl p-8 border border-green-100 container mx-auto my-20 px-4">
-      <h3 className="text-2xl font-semibold text-slate-800 mb-4">
-        Join Our Open Source Community
-      </h3>
-      <p className="text-lg text-slate-700 mb-6">
-        Twiga is proudly developed by the Tanzania AI Community with
-        contributions from developers, educators, and AI enthusiasts worldwide.{" "}
-        <strong>We welcome your contributions!</strong>
-      </p>
-
-      <div className="grid md:grid-cols-2 gap-6 mb-6">
-        <div className="text-left">
-          <h4 className="font-semibold text-slate-800 mb-2">
-            How You Can Contribute:
-          </h4>
-          <ul className="text-slate-600 space-y-1 text-sm">
-            <li>• Code development & bug fixes</li>
-            <li>• Educational content creation</li>
-            <li>• Translation & localization</li>
-            <li>• Testing & feedback</li>
+    <section className="px-6 py-20 md:px-8 md:py-24">
+      <div className="mx-auto grid max-w-[1100px] items-start gap-12 md:grid-cols-2 md:gap-16">
+        <div>
+          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-twiga-amber">
+            Open Source
+          </p>
+          <h2 className="font-display text-[clamp(1.8rem,3vw,2.5rem)] font-normal leading-tight text-twiga-forest">
+            Built in the open,
+            <br />
+            by the community
+          </h2>
+          <p className="mt-4 max-w-[520px] font-light leading-relaxed text-twiga-text-muted">
+            Twiga is proudly developed by the Tanzania AI Community with
+            contributions from developers, educators, and AI enthusiasts
+            worldwide.
+          </p>
+          <ul className="mt-8 flex flex-col gap-3">
+            {contributeItems.map((item) => (
+              <li
+                key={item}
+                className="flex items-center gap-3 rounded-lg border border-twiga-cream-dark bg-white px-4 py-3 text-sm text-twiga-text"
+              >
+                <span
+                  className="size-1.5 shrink-0 rounded-full bg-twiga-forest-light"
+                  aria-hidden
+                />
+                {item}
+              </li>
+            ))}
           </ul>
-        </div>
-        <div className="text-left">
-          <h4 className="font-semibold text-slate-800 mb-2">
-            Community Stats:
-          </h4>
-          <div className="flex flex-wrap gap-2">
-            <Badge
-              variant="secondary"
-              className="bg-orange-100 text-orange-800"
+          <div className="mt-8 flex flex-wrap gap-4">
+            <Link
+              href="https://github.com/Tanzania-AI-Community/twiga"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-lg border-[1.5px] border-twiga-forest bg-transparent px-5 py-2.5 text-sm font-semibold text-twiga-forest transition-colors hover:bg-twiga-forest hover:text-twiga-cream"
             >
-              15+ Contributors
-            </Badge>
-            <Badge variant="secondary" className="bg-teal-100 text-teal-800">
-              Open Source
-            </Badge>
+              <Github className="size-4" />
+              View on GitHub
+            </Link>
+            <Link
+              href="https://discord.com/invite/bCe2HfZY2C"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-lg border-[1.5px] border-twiga-forest bg-transparent px-5 py-2.5 text-sm font-semibold text-twiga-forest transition-colors hover:bg-twiga-forest hover:text-twiga-cream"
+            >
+              <MessageCircle className="size-4" />
+              Join Discord
+            </Link>
           </div>
         </div>
-      </div>
-
-      <div className="flex flex-col sm:flex-row gap-4 justify-center">
-        <Button
-          variant="outline"
-          className="border-slate-300 text-slate-700 hover:bg-slate-50 bg-transparent"
-          asChild
-        >
-          <Link
-            href="https://github.com/Tanzania-AI-Community/twiga"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Users className="w-4 h-4 mr-2" />
-            View on GitHub
-          </Link>
-        </Button>
-        <Button className="bg-green-600 hover:bg-green-700 text-white" asChild>
-          <Link
-            href="https://discord.com/invite/bCe2HfZY2C"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <MessageCircle className="w-4 h-4 mr-2" />
-            Join Our Discord
-          </Link>
-        </Button>
+        <div className="grid grid-cols-2 gap-8 rounded-2xl bg-twiga-forest p-10">
+          <div>
+            <div className="font-display text-[2.5rem] font-semibold leading-none text-twiga-cream">
+              15+
+            </div>
+            <div className="mt-2 text-xs font-light text-twiga-cream/60">
+              Contributors worldwide
+            </div>
+          </div>
+          <div>
+            <div className="font-display text-[2.5rem] font-semibold leading-none text-twiga-cream">
+              MIT
+            </div>
+            <div className="mt-2 text-xs font-light text-twiga-cream/60">
+              Open source license
+            </div>
+          </div>
+          <div>
+            <div className="font-display text-[2.5rem] font-semibold leading-none text-twiga-cream">
+              RAG
+            </div>
+            <div className="mt-2 text-xs font-light text-twiga-cream/60">
+              Powered by TIE curriculum
+            </div>
+          </div>
+          <div>
+            <div className="font-display text-[2.5rem] font-semibold leading-none text-twiga-cream">
+              ∞
+            </div>
+            <div className="mt-2 text-xs font-light text-twiga-cream/60">
+              Ways to contribute
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -2,11 +2,53 @@
 @import "tw-animate-css";
 
 @theme inline {
-  --font-sans: var(--font-open-sans);
-  --font-serif: var(--font-work-sans);
+  --font-sans: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --color-twiga-cream: #faf8f3;
+  --color-twiga-cream-mid: #f2ede3;
+  --color-twiga-cream-dark: #e8e0d2;
+  --color-twiga-forest: #1a3d2b;
+  --color-twiga-forest-mid: #2d6a4f;
+  --color-twiga-forest-light: #4a9b72;
+  --color-twiga-forest-pale: #eaf4ee;
+  --color-twiga-amber: #c96b1a;
+  --color-twiga-amber-light: #f4a261;
+  --color-twiga-amber-pale: #fdf1e6;
+  --color-twiga-text: #1c1a17;
+  --color-twiga-text-muted: #7a7568;
+  --color-twiga-text-light: #a8a296;
+  --color-twiga-wa: #25d366;
+  --color-twiga-wa-dark: #128c7e;
+  --color-twiga-wa-bubble: #dcf8c6;
+  --color-twiga-footer: #1c1a17;
+  --animate-twiga-fade-up: twiga-fade-up 0.6s ease both;
+  --animate-twiga-bounce-dot: twiga-bounce-dot 1.2s infinite;
 }
 
 @custom-variant dark (&:is(.dark *));
+
+@keyframes twiga-bounce-dot {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes twiga-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 :root {
   --background: oklch(1 0 0);
@@ -123,6 +165,38 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
   }
+}
+
+/* Landing: hero entrance */
+.twiga-fade-up {
+  animation: twiga-fade-up 0.6s ease both;
+}
+.twiga-fade-up-delay-1 {
+  animation-delay: 0.1s;
+}
+.twiga-fade-up-delay-2 {
+  animation-delay: 0.25s;
+}
+.twiga-fade-up-delay-3 {
+  animation-delay: 0.4s;
+}
+.twiga-fade-up-delay-4 {
+  animation-delay: 0.55s;
+}
+
+/* Subtle paper grain (landing sections can add bg-twiga-texture) */
+.bg-twiga-texture {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+.twiga-dot-bounce {
+  animation: twiga-bounce-dot 1.2s infinite;
+}
+.twiga-dot-bounce-delay-1 {
+  animation-delay: 0.2s;
+}
+.twiga-dot-bounce-delay-2 {
+  animation-delay: 0.4s;
 }
