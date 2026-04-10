@@ -1,20 +1,7 @@
 import Link from "next/link";
-import type { LucideIcon } from "lucide-react";
-import {
-  BookOpen,
-  Code2,
-  FlaskConical,
-  Github,
-  Languages,
-  MessageCircle,
-} from "lucide-react";
+import { Github, MessageCircle } from "lucide-react";
 
-const contributeWays: { label: string; icon: LucideIcon }[] = [
-  { label: "Code development & bug fixes", icon: Code2 },
-  { label: "Educational content creation", icon: BookOpen },
-  { label: "Translation & localization", icon: Languages },
-  { label: "Testing & feedback", icon: FlaskConical },
-];
+import { OpenSourceContributeWays } from "@/components/sections/OpenSourceContributeWays";
 
 export default function OpenSourceCTA() {
   return (
@@ -92,23 +79,7 @@ export default function OpenSourceCTA() {
           </div>
         </div>
 
-        <ul className="mt-12 grid list-none grid-cols-2 gap-4 p-0 md:mt-14 md:grid-cols-4 md:gap-5">
-          {contributeWays.map(({ label, icon: Icon }) => (
-            <li key={label}>
-              <div className="flex h-full flex-col items-center gap-3 rounded-xl border border-twiga-cream-dark bg-white px-4 py-5 text-center md:px-5">
-                <span
-                  className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-twiga-forest-pale text-twiga-forest"
-                  aria-hidden
-                >
-                  <Icon className="size-6" strokeWidth={1.75} />
-                </span>
-                <span className="text-sm font-medium leading-snug text-twiga-text">
-                  {label}
-                </span>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <OpenSourceContributeWays />
       </div>
     </section>
   );
