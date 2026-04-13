@@ -8,7 +8,6 @@ import { Calendar as CalendarIcon, Filter, X } from "lucide-react";
 import { type DateRange } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
-import { getDefaultDateRange } from "@/lib/search-params";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
@@ -29,36 +28,29 @@ import { Card, CardContent } from "@/components/ui/card";
 const statusOptions = [
   { value: "all", label: "All States" },
   { value: "active", label: "Active" },
+  { value: "approved", label: "Approved" },
   { value: "onboarding", label: "Onboarding" },
-  { value: "new", label: "New" },
+  { value: "in_review", label: "In Review" },
   { value: "blocked", label: "Blocked" },
   { value: "rate_limited", label: "Rate Limited" },
+  { value: "inactive", label: "Inactive" },
 ];
 
 export function AdminFilters() {
   const router = useRouter();
-  const defaultDates = getDefaultDateRange();
 
   const [search, setSearch] = useQueryState("search", { defaultValue: "" });
   const [status, setStatus] = useQueryState("status", { defaultValue: "all" });
   const [startDate, setStartDate] = useQueryState("startDate", {
-    defaultValue: defaultDates.startDate,
+    defaultValue: "",
   });
   const [endDate, setEndDate] = useQueryState("endDate", {
-    defaultValue: defaultDates.endDate,
+    defaultValue: "",
   });
 
   const [searchValue, setSearchValue] = React.useState(search);
   const [dateRange, setDateRange] = React.useState<DateRange | undefined>(
-    () => {
-      if (startDate && endDate) {
-        return {
-          from: new Date(startDate),
-          to: new Date(endDate),
-        };
-      }
-      return undefined;
-    }
+    undefined
   );
 
   const searchTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(
@@ -143,7 +135,7 @@ export function AdminFilters() {
                 Search
               </label>
               <Input
-                placeholder="Search by name, school, or email..."
+                placeholder="Search by name, school, or WhatsApp..."
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
                 className="w-full"

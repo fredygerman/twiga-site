@@ -13,7 +13,7 @@ import {
 export const userStates = [
   "blocked",
   "rate_limited",
-  "new",
+  "approved",
   "onboarding",
   "active",
   "inactive",
@@ -30,7 +30,7 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 50 }),
   wa_id: varchar("wa_id", { length: 20 }).notNull().unique(),
-  state: varchar("state", { length: 50 }).default("new").notNull(),
+  state: varchar("state", { length: 50 }).default("approved").notNull(),
   onboarding_state: varchar("onboarding_state", { length: 50 }).default("new"),
   role: varchar("role", { length: 20 }).default("teacher").notNull(),
   class_info: json("class_info").$type<Record<string, string[]>>(),
@@ -48,18 +48,3 @@ export const users = pgTable("users", {
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
-
-// Keep registrations table for backward compatibility if needed
-export const registrations = pgTable("registrations", {
-  id: serial("id").primaryKey(),
-  fullName: varchar("full_name", { length: 255 }).notNull(),
-  schoolName: varchar("school_name", { length: 255 }).notNull(),
-  email: varchar("email", { length: 255 }).notNull(),
-  whatsappNumber: varchar("whatsapp_number", { length: 50 }).notNull(),
-  status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, approved, rejected
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-export type Registration = typeof registrations.$inferSelect;
-export type NewRegistration = typeof registrations.$inferInsert;

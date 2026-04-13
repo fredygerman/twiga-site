@@ -40,7 +40,7 @@ export default async function AdminDashboard({
     total: users.length,
     active: users.filter((u) => u.state === "active").length,
     onboarding: users.filter((u) => u.state === "onboarding").length,
-    new: users.filter((u) => u.state === "new").length,
+    approved: users.filter((u) => u.state === "approved").length,
     blocked: users.filter((u) => u.state === "blocked").length,
     rate_limited: users.filter((u) => u.state === "rate_limited").length,
     inactive: users.filter((u) => u.state === "inactive").length,
@@ -134,12 +134,12 @@ export default async function AdminDashboard({
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">New</p>
-                  <p className="text-2xl font-bold text-gray-600">
-                    {stats.new}
+                  <p className="text-sm font-medium text-slate-600">Approved</p>
+                  <p className="text-2xl font-bold text-blue-600">
+                    {stats.approved}
                   </p>
                 </div>
-                <Users className="w-6 h-6 text-gray-500" />
+                <Check className="w-6 h-6 text-blue-500" />
               </div>
             </CardContent>
           </Card>

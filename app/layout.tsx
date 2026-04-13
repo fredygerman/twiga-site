@@ -1,21 +1,24 @@
 import type React from "react";
 import type { Metadata } from "next";
-import { Work_Sans, Open_Sans } from "next/font/google";
+import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@vercel/analytics/next";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
-const workSans = Work_Sans({
+const fraunces = Fraunces({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-work-sans",
+  variable: "--font-fraunces",
+  weight: ["300", "400", "600"],
+  style: ["normal", "italic"],
 });
 
-const openSans = Open_Sans({
+const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-open-sans",
+  variable: "--font-plus-jakarta",
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -36,11 +39,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${workSans.variable} ${openSans.variable} antialiased`}
+      className={`${fraunces.variable} ${plusJakarta.variable} scroll-smooth antialiased`}
     >
       <body>
         <NuqsAdapter>{children}</NuqsAdapter>
-        <Toaster richColors />
+        <Toaster richColors position="top-center" />
         <Analytics />
       </body>
     </html>
