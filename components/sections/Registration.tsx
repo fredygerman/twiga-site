@@ -6,13 +6,6 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { useState, useTransition } from "react";
 import { submitRegistration } from "@/lib/actions";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -23,9 +16,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Phone, School, User, CheckCircle } from "lucide-react";
+import { CheckCircle } from "lucide-react";
 
-// Define the form schema with validation
 const FormSchema = z.object({
   fullName: z.string().min(2, {
     message: "Full name must be at least 2 characters.",
@@ -43,7 +35,6 @@ const FormSchema = z.object({
         "Please enter a valid Tanzanian phone number (255XXXXXXXXX or 0XXXXXXXXX).",
     })
     .transform((val) => {
-      // Convert 0XXXXXXXXX to 255XXXXXXXXX format
       if (val.startsWith("0")) {
         return "255" + val.slice(1);
       }
@@ -52,6 +43,27 @@ const FormSchema = z.object({
 });
 
 type FormData = z.infer<typeof FormSchema>;
+
+const steps = [
+  {
+    n: 1,
+    title: "Fill in your details",
+    desc: "Your name, school, and Tanzanian WhatsApp number.",
+  },
+  {
+    n: 2,
+    title: "Receive your activation link",
+    desc: "We'll send it directly to your WhatsApp within minutes.",
+  },
+  {
+    n: 3,
+    title: "Start planning lessons",
+    desc: "Chat with Twiga on WhatsApp, just like texting a colleague.",
+  },
+];
+
+const inputClassName =
+  "border-[1.5px] border-twiga-cream-dark bg-twiga-cream text-twiga-text transition-colors focus-visible:border-twiga-forest focus-visible:ring-twiga-forest/20 focus-visible:bg-white";
 
 export default function Registration() {
   const [isPending, startTransition] = useTransition();
@@ -93,7 +105,7 @@ export default function Registration() {
               "Please try again or contact support if the problem persists.",
           });
         }
-      } catch (error) {
+      } catch {
         setSubmitStatus("error");
         toast.error("Registration Failed", {
           description:
@@ -105,156 +117,181 @@ export default function Registration() {
 
   if (submitStatus === "success") {
     return (
-      <section id="register" className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto">
-            <Card className="border-green-100 shadow-lg">
-              <CardContent className="text-center py-12">
-                <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                <h3 className="text-2xl font-bold text-green-700 mb-2">
-                  Registration Successful!
-                </h3>
-                <p className="text-slate-600 mb-6">
-                  Thank you for joining Twiga! We'll get back to you when your
-                  application is approved.
-                </p>
-                <Button
-                  onClick={() => setSubmitStatus("idle")}
-                  variant="outline"
-                  className="border-green-500 text-green-600 hover:bg-green-50"
-                >
-                  Register Another Teacher
-                </Button>
-              </CardContent>
-            </Card>
+      <section
+        id="register"
+        className="bg-twiga-cream-mid px-6 py-20 md:px-8 md:py-24"
+      >
+        <div className="mx-auto max-w-xl">
+          <div className="rounded-2xl border border-twiga-cream-dark bg-white px-8 py-12 text-center shadow-sm">
+            <CheckCircle
+              className="mx-auto mb-4 size-16 text-twiga-forest-light"
+              strokeWidth={1.25}
+            />
+            <h3 className="font-display text-2xl text-twiga-forest">
+              Registration Successful!
+            </h3>
+            <p className="mt-3 font-light leading-relaxed text-twiga-text-muted">
+              Thank you for joining Twiga! We&apos;ll get back to you when your
+              application is approved.
+            </p>
+            <Button
+              onClick={() => setSubmitStatus("idle")}
+              variant="outline"
+              className="mt-8 border-twiga-forest text-twiga-forest hover:bg-twiga-forest-pale"
+            >
+              Register Another Teacher
+            </Button>
           </div>
         </div>
       </section>
     );
   }
+
   return (
-    <section id="register" className="py-20 bg-white">
-      <div className="container mx-auto px-4">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
-              Get Early Access
-            </h2>
-            <p className="text-xl text-slate-600">
-              Join hundreds of Tanzanian teachers already using Twiga
+    <section
+      id="register"
+      className="bg-twiga-cream-mid px-6 py-20 md:px-8 md:py-24"
+    >
+      <div className="mx-auto max-w-[1100px]">
+        <div className="grid items-start gap-10 md:grid-cols-2 md:gap-20">
+          <div>
+            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-twiga-amber">
+              Get Started
             </p>
+            <h2 className="font-display text-[clamp(1.8rem,3vw,2.5rem)] font-normal leading-tight text-twiga-forest">
+              Join hundreds of teachers already using Twiga
+            </h2>
+            <p className="mt-4 max-w-md font-light leading-relaxed text-twiga-text-muted">
+              Registration takes under two minutes. Your account is activated
+              directly through WhatsApp, with no app to install.
+            </p>
+            <ol className="mt-10 flex flex-col gap-6">
+              {steps.map((s) => (
+                <li key={s.n} className="flex gap-5">
+                  <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-twiga-forest text-xs font-bold text-twiga-cream">
+                    {s.n}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-twiga-text">
+                      {s.title}
+                    </p>
+                    <p className="mt-1 text-sm font-light text-twiga-text-muted">
+                      {s.desc}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
           </div>
 
-          <Card className="border-green-100 shadow-lg">
-            <CardHeader>
-              <CardTitle className="text-center text-green-700">
-                Teacher Registration
-              </CardTitle>
-              <CardDescription className="text-center">
-                We'll send your activation link directly to your WhatsApp
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-6"
+          <div className="rounded-2xl border border-twiga-cream-dark bg-white p-8 md:p-10">
+            <h3 className="font-display text-2xl text-twiga-forest">
+              Teacher Registration
+            </h3>
+            <p className="mt-2 text-sm font-light text-twiga-text-muted">
+              We&apos;ll send your activation link directly to WhatsApp. Free for
+              all Tanzanian teachers.
+            </p>
+
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="mt-8 space-y-5"
+              >
+                <FormField
+                  control={form.control}
+                  name="fullName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs font-semibold text-twiga-text">
+                        Full Name
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Your full name"
+                          disabled={isPending}
+                          className={inputClassName}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="schoolName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs font-semibold text-twiga-text">
+                        School Name
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="School or institution name"
+                          disabled={isPending}
+                          className={inputClassName}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="whatsappNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs font-semibold text-twiga-text">
+                        WhatsApp Number
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="+255 700 000 000"
+                          disabled={isPending}
+                          className={inputClassName}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex gap-2 rounded-lg border border-[#f4cda0] bg-twiga-amber-pale px-3.5 py-3 text-xs leading-relaxed text-[#7a4a15]">
+                  <span className="shrink-0" aria-hidden>
+                    ⓘ
+                  </span>
+                  <span>
+                    This will be your primary number with Twiga. Only Tanzanian
+                    numbers are supported. Changing it later requires
+                    re-registration.
+                  </span>
+                </div>
+
+                <Button
+                  type="submit"
+                  className="h-12 w-full bg-twiga-wa-dark text-base font-semibold text-white hover:bg-twiga-wa disabled:opacity-50"
+                  disabled={isPending}
                 >
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="fullName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center space-x-2">
-                            <User className="w-4 h-4" />
-                            <span>Full Name</span>
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Enter your full name"
-                              disabled={isPending}
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="schoolName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center space-x-2">
-                            <School className="w-4 h-4" />
-                            <span>School Name</span>
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Your school name"
-                              disabled={isPending}
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                  {isPending ? (
+                    <>
+                      <span className="mr-2 size-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      Registering...
+                    </>
+                  ) : (
+                    <>💬 Join Twiga Beta</>
+                  )}
+                </Button>
 
-                  <FormField
-                    control={form.control}
-                    name="whatsappNumber"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex items-center space-x-2">
-                          <Phone className="w-4 h-4" />
-                          <span>WhatsApp Number</span>
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="255XXXXXXXXX or 0XXXXXXXXX"
-                            disabled={isPending}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                        <p className="text-xs text-slate-500 mt-1">
-                          <strong>Important:</strong> This will be your primary
-                          communication number with Twiga. Only Tanzanian
-                          numbers are supported. Changing your number later will
-                          require re-registration.
-                        </p>
-                      </FormItem>
-                    )}
-                  />
-
-                  <Button
-                    type="submit"
-                    className="w-full bg-lime-500 hover:bg-lime-600 text-white py-3 text-lg disabled:opacity-50"
-                    disabled={isPending}
-                  >
-                    {isPending ? (
-                      <>
-                        <div className="w-5 h-5 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        Registering...
-                      </>
-                    ) : (
-                      <>Join Twiga Beta</>
-                    )}
-                  </Button>
-
-                  <p className="text-sm text-slate-500 text-center">
-                    By registering, you agree to receive WhatsApp messages from
-                    Twiga on the provided number. Free for all Tanzanian
-                    teachers. Your phone number will be used for all future
-                    communications.
-                  </p>
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
+                <p className="text-center text-xs font-light leading-relaxed text-twiga-text-light">
+                  By registering, you agree to receive WhatsApp messages from
+                  Twiga. Free for all Tanzanian teachers.
+                </p>
+              </form>
+            </Form>
+          </div>
         </div>
       </div>
     </section>
