@@ -127,7 +127,7 @@ export default function SiteFooter() {
             </Link>
           </div>
           <p>
-            &copy; 2024 Twiga Project. Built with ❤️ by the Tanzania AI
+            &copy; 2026 Twiga Project. Built with ❤️ by the Tanzania AI
             Community.
           </p>
         </div>
