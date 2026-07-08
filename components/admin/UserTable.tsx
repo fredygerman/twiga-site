@@ -15,15 +15,7 @@ import {
 } from "@/components/admin/ColumnToggle";
 import { UserDetailDialog } from "@/components/admin/UserDetailDialog";
 import { StatusActions } from "@/components/admin/StatusActions";
-import {
-  Check,
-  Clock,
-  UserX,
-  AlertTriangle,
-  Users,
-  UserMinus,
-  Eye,
-} from "lucide-react";
+import { Users } from "lucide-react";
 
 interface User {
   id: number;
@@ -44,6 +36,57 @@ interface User {
 interface UserTableProps {
   users: User[];
 }
+
+// Soft pill badge per user state, consistent with the metric-card pills.
+const STATE_BADGES: Record<string, { pill: string; dot: string }> = {
+  active: {
+    pill: "border-green-200 bg-green-50 text-green-700",
+    dot: "bg-green-500",
+  },
+  approved: {
+    pill: "border-blue-200 bg-blue-50 text-blue-700",
+    dot: "bg-blue-500",
+  },
+  onboarding: {
+    pill: "border-sky-200 bg-sky-50 text-sky-700",
+    dot: "bg-sky-500",
+  },
+  blocked: {
+    pill: "border-red-200 bg-red-50 text-red-700",
+    dot: "bg-red-500",
+  },
+  rate_limited: {
+    pill: "border-yellow-200 bg-yellow-50 text-yellow-700",
+    dot: "bg-yellow-500",
+  },
+  inactive: {
+    pill: "border-gray-200 bg-gray-50 text-gray-600",
+    dot: "bg-gray-400",
+  },
+  in_review: {
+    pill: "border-purple-200 bg-purple-50 text-purple-700",
+    dot: "bg-purple-500",
+  },
+};
+
+function StateBadge({ state }: { state: string }) {
+  const badge = STATE_BADGES[state] ?? {
+    pill: "border-gray-200 bg-gray-50 text-gray-600",
+    dot: "bg-gray-400",
+  };
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-2 py-0.5 text-xs font-medium capitalize ${badge.pill}`}
+    >
+      <span className={`h-1.5 w-1.5 rounded-full ${badge.dot}`} aria-hidden />
+      {state.replace("_", " ")}
+    </span>
+  );
+}
+
+// Tiny uppercase header label, matching the metric cards' section labels.
+const headClass =
+  "text-[11px] font-semibold uppercase tracking-wider text-muted-foreground";
 
 export function UserTable({ users }: UserTableProps) {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -74,48 +117,6 @@ export function UserTable({ users }: UserTableProps) {
     }).format(new Date(date));
   }
 
-  function getStateIcon(state: string) {
-    switch (state) {
-      case "active":
-        return <Check className="w-4 h-4 text-green-500" />;
-      case "approved":
-        return <Check className="w-4 h-4 text-blue-500" />;
-      case "blocked":
-        return <UserX className="w-4 h-4 text-red-500" />;
-      case "rate_limited":
-        return <AlertTriangle className="w-4 h-4 text-yellow-500" />;
-      case "onboarding":
-        return <Clock className="w-4 h-4 text-blue-500" />;
-      case "inactive":
-        return <UserMinus className="w-4 h-4 text-gray-400" />;
-      case "in_review":
-        return <Eye className="w-4 h-4 text-purple-500" />;
-      default:
-        return <Users className="w-4 h-4 text-gray-500" />;
-    }
-  }
-
-  function getStateColor(state: string) {
-    switch (state) {
-      case "active":
-        return "text-green-600";
-      case "approved":
-        return "text-blue-600";
-      case "blocked":
-        return "text-red-600";
-      case "rate_limited":
-        return "text-yellow-600";
-      case "onboarding":
-        return "text-blue-600";
-      case "inactive":
-        return "text-gray-500";
-      case "in_review":
-        return "text-purple-600";
-      default:
-        return "text-gray-600";
-    }
-  }
-
   function handleUserClick(user: User) {
     setSelectedUser(user);
     setDialogOpen(true);
@@ -123,13 +124,12 @@ export function UserTable({ users }: UserTableProps) {
 
   if (users.length === 0) {
     return (
-      <div className="text-center py-12">
-        <Users className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-slate-600 mb-2">
-          No users found
-        </h3>
-        <p className="text-slate-500">
-          Users will appear here when they join the platform.
+      <div className="flex flex-col items-center justify-center gap-1 py-12 text-center">
+        <Users className="mb-2 h-8 w-8 text-slate-300" />
+        <p className="text-sm font-medium text-slate-600">No users found</p>
+        <p className="text-xs text-muted-foreground">
+          Users appear here when they join the platform, or when you clear
+          your filters.
         </p>
       </div>
     );
@@ -137,10 +137,10 @@ export function UserTable({ users }: UserTableProps) {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">
+      <div className="mb-4 flex items-center justify-between">
+        <p className="text-sm font-medium text-slate-600">
           {users.length} user{users.length !== 1 ? "s" : ""} found
-        </h3>
+        </p>
         <ColumnToggle
           columnVisibility={columnVisibility}
           onColumnVisibilityChange={setColumnVisibility}
@@ -150,82 +150,97 @@ export function UserTable({ users }: UserTableProps) {
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow>
-              {columnVisibility.name && <TableHead>Name</TableHead>}
-              {columnVisibility.wa_id && <TableHead>WhatsApp ID</TableHead>}
-              {columnVisibility.school_name && <TableHead>School</TableHead>}
-              {columnVisibility.region && <TableHead>Region</TableHead>}
-              {columnVisibility.role && <TableHead>Role</TableHead>}
-              {columnVisibility.state && <TableHead>State</TableHead>}
+            <TableRow className="hover:bg-transparent">
+              {columnVisibility.name && (
+                <TableHead className={headClass}>Name</TableHead>
+              )}
+              {columnVisibility.wa_id && (
+                <TableHead className={headClass}>WhatsApp ID</TableHead>
+              )}
+              {columnVisibility.school_name && (
+                <TableHead className={headClass}>School</TableHead>
+              )}
+              {columnVisibility.region && (
+                <TableHead className={headClass}>Region</TableHead>
+              )}
+              {columnVisibility.role && (
+                <TableHead className={headClass}>Role</TableHead>
+              )}
+              {columnVisibility.state && (
+                <TableHead className={headClass}>State</TableHead>
+              )}
               {columnVisibility.onboarding_state && (
-                <TableHead>Onboarding</TableHead>
+                <TableHead className={headClass}>Onboarding</TableHead>
               )}
-              {columnVisibility.class_info && <TableHead>Classes</TableHead>}
-              {columnVisibility.birthday && <TableHead>Birthday</TableHead>}
+              {columnVisibility.class_info && (
+                <TableHead className={headClass}>Classes</TableHead>
+              )}
+              {columnVisibility.birthday && (
+                <TableHead className={headClass}>Birthday</TableHead>
+              )}
               {columnVisibility.last_message_at && (
-                <TableHead>Last Message</TableHead>
+                <TableHead className={headClass}>Last Message</TableHead>
               )}
-              {columnVisibility.created_at && <TableHead>Created</TableHead>}
-              {columnVisibility.actions && <TableHead>Actions</TableHead>}
+              {columnVisibility.created_at && (
+                <TableHead className={headClass}>Created</TableHead>
+              )}
+              {columnVisibility.actions && (
+                <TableHead className={headClass}>Actions</TableHead>
+              )}
             </TableRow>
           </TableHeader>
           <TableBody>
             {users.map((user) => (
               <TableRow
                 key={user.id}
-                className="cursor-pointer hover:bg-gray-50"
+                className="cursor-pointer hover:bg-gray-50/80"
                 onClick={() => handleUserClick(user)}
               >
                 {columnVisibility.name && (
-                  <TableCell className="font-medium">
+                  <TableCell className="py-2.5 font-medium text-slate-900">
                     {user.name || "—"}
                   </TableCell>
                 )}
                 {columnVisibility.wa_id && (
-                  <TableCell className="font-mono text-sm">
+                  <TableCell className="py-2.5 font-mono text-xs text-slate-600">
                     {user.wa_id}
                   </TableCell>
                 )}
                 {columnVisibility.school_name && (
-                  <TableCell>{user.school_name || "—"}</TableCell>
+                  <TableCell className="py-2.5 text-sm text-slate-700">
+                    {user.school_name || "—"}
+                  </TableCell>
                 )}
                 {columnVisibility.region && (
-                  <TableCell>{user.region || "—"}</TableCell>
+                  <TableCell className="py-2.5 text-sm text-slate-700">
+                    {user.region || "—"}
+                  </TableCell>
                 )}
                 {columnVisibility.role && (
-                  <TableCell>
-                    <span
-                      className={`capitalize ${
-                        user.role === "admin"
-                          ? "font-semibold text-purple-600"
-                          : "text-slate-600"
-                      }`}
-                    >
-                      {user.role}
-                    </span>
+                  <TableCell className="py-2.5">
+                    {user.role === "admin" ? (
+                      <span className="inline-flex items-center rounded-full border border-purple-200 bg-purple-50 px-2 py-0.5 text-xs font-semibold capitalize text-purple-700">
+                        {user.role}
+                      </span>
+                    ) : (
+                      <span className="text-sm capitalize text-slate-600">
+                        {user.role}
+                      </span>
+                    )}
                   </TableCell>
                 )}
                 {columnVisibility.state && (
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      {getStateIcon(user.state)}
-                      <span
-                        className={`capitalize text-sm ${getStateColor(
-                          user.state
-                        )}`}
-                      >
-                        {user.state.replace("_", " ")}
-                      </span>
-                    </div>
+                  <TableCell className="py-2.5">
+                    <StateBadge state={user.state} />
                   </TableCell>
                 )}
                 {columnVisibility.onboarding_state && (
-                  <TableCell className="text-sm">
+                  <TableCell className="py-2.5 text-xs text-slate-600">
                     {user.onboarding_state || "—"}
                   </TableCell>
                 )}
                 {columnVisibility.class_info && (
-                  <TableCell className="text-sm">
+                  <TableCell className="py-2.5 text-xs text-slate-600">
                     {user.class_info ? (
                       <div
                         className="max-w-32 truncate"
@@ -239,22 +254,25 @@ export function UserTable({ users }: UserTableProps) {
                   </TableCell>
                 )}
                 {columnVisibility.birthday && (
-                  <TableCell className="text-sm text-slate-500">
+                  <TableCell className="whitespace-nowrap py-2.5 text-xs text-muted-foreground">
                     {user.birthday ? formatDate(user.birthday) : "—"}
                   </TableCell>
                 )}
                 {columnVisibility.last_message_at && (
-                  <TableCell className="text-sm text-slate-500">
+                  <TableCell className="whitespace-nowrap py-2.5 text-xs text-muted-foreground">
                     {formatDate(user.last_message_at)}
                   </TableCell>
                 )}
                 {columnVisibility.created_at && (
-                  <TableCell className="text-slate-500 text-sm">
+                  <TableCell className="whitespace-nowrap py-2.5 text-xs text-muted-foreground">
                     {formatDate(user.created_at)}
                   </TableCell>
                 )}
                 {columnVisibility.actions && (
-                  <TableCell onClick={(e) => e.stopPropagation()}>
+                  <TableCell
+                    className="py-2.5"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <StatusActions
                       userId={user.id!}
                       currentState={user.state}
