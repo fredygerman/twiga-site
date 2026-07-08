@@ -15,23 +15,6 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Check,
-  Clock,
-  UserX,
-  AlertTriangle,
-  Users,
-  Calendar,
-  School,
-  MapPin,
-  MessageSquare,
-  User,
-  Hash,
-  UserMinus,
-  Eye,
-} from "lucide-react";
 
 interface User {
   id: number;
@@ -55,6 +38,96 @@ interface UserDetailDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
+// Same soft pills as the user table, so the dialog reads as one system.
+const STATE_BADGES: Record<string, { pill: string; dot: string }> = {
+  active: {
+    pill: "border-green-200 bg-green-50 text-green-700",
+    dot: "bg-green-500",
+  },
+  approved: {
+    pill: "border-blue-200 bg-blue-50 text-blue-700",
+    dot: "bg-blue-500",
+  },
+  onboarding: {
+    pill: "border-sky-200 bg-sky-50 text-sky-700",
+    dot: "bg-sky-500",
+  },
+  blocked: {
+    pill: "border-red-200 bg-red-50 text-red-700",
+    dot: "bg-red-500",
+  },
+  rate_limited: {
+    pill: "border-yellow-200 bg-yellow-50 text-yellow-700",
+    dot: "bg-yellow-500",
+  },
+  inactive: {
+    pill: "border-gray-200 bg-gray-50 text-gray-600",
+    dot: "bg-gray-400",
+  },
+  in_review: {
+    pill: "border-purple-200 bg-purple-50 text-purple-700",
+    dot: "bg-purple-500",
+  },
+};
+
+function StateBadge({ state }: { state: string }) {
+  const badge = STATE_BADGES[state] ?? {
+    pill: "border-gray-200 bg-gray-50 text-gray-600",
+    dot: "bg-gray-400",
+  };
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-2 py-0.5 text-xs font-medium capitalize ${badge.pill}`}
+    >
+      <span className={`h-1.5 w-1.5 rounded-full ${badge.dot}`} aria-hidden />
+      {state.replace("_", " ")}
+    </span>
+  );
+}
+
+function RolePill({ role }: { role: string }) {
+  return (
+    <span
+      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium capitalize ${
+        role === "admin"
+          ? "border-purple-200 bg-purple-50 text-purple-700"
+          : "border-gray-200 bg-gray-50 text-gray-600"
+      }`}
+    >
+      {role}
+    </span>
+  );
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="pb-1 pt-4 text-[10px] font-bold uppercase tracking-wider text-muted-foreground first:pt-0">
+      {children}
+    </p>
+  );
+}
+
+function Row({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-baseline justify-between gap-4 py-2">
+      <span className="flex-none text-xs text-muted-foreground">{label}</span>
+      <span className="min-w-0 text-right text-sm text-slate-900">
+        {children}
+      </span>
+    </div>
+  );
+}
+
+function Empty() {
+  return <span className="text-muted-foreground">—</span>;
+}
+
 export function UserDetailDialog({
   user,
   open,
@@ -67,10 +140,8 @@ export function UserDetailDialog({
       setIsMobile(window.innerWidth < 768); // md breakpoint
     };
 
-    // Set initial value
     checkScreenSize();
 
-    // Add event listener with throttling for better performance
     let timeoutId: NodeJS.Timeout;
     const handleResize = () => {
       clearTimeout(timeoutId);
@@ -78,7 +149,6 @@ export function UserDetailDialog({
     };
 
     window.addEventListener("resize", handleResize);
-
     return () => {
       window.removeEventListener("resize", handleResize);
       clearTimeout(timeoutId);
@@ -88,10 +158,10 @@ export function UserDetailDialog({
   if (!user) return null;
 
   function formatDate(date: Date | string | null) {
-    if (!date) return "Not set";
+    if (!date) return null;
     return new Intl.DateTimeFormat("en-US", {
       year: "numeric",
-      month: "long",
+      month: "short",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
@@ -99,242 +169,96 @@ export function UserDetailDialog({
     }).format(new Date(date));
   }
 
-  function getStateIcon(state: string) {
-    switch (state) {
-      case "active":
-        return <Check className="w-4 h-4 text-green-500" />;
-      case "approved":
-        return <Check className="w-4 h-4 text-blue-500" />;
-      case "blocked":
-        return <UserX className="w-4 h-4 text-red-500" />;
-      case "rate_limited":
-        return <AlertTriangle className="w-4 h-4 text-yellow-500" />;
-      case "onboarding":
-        return <Clock className="w-4 h-4 text-blue-500" />;
-      case "inactive":
-        return <UserMinus className="w-4 h-4 text-gray-400" />;
-      case "in_review":
-        return <Eye className="w-4 h-4 text-purple-500" />;
-      default:
-        return <Users className="w-4 h-4 text-gray-500" />;
-    }
+  function formatDay(date: string | null) {
+    if (!date) return null;
+    return new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      timeZone: "UTC",
+    }).format(new Date(date));
   }
 
-  function getStateColor(state: string) {
-    switch (state) {
-      case "active":
-        return "bg-green-100 text-green-800 border-green-200";
-      case "approved":
-        return "bg-blue-100 text-blue-800 border-blue-200";
-      case "blocked":
-        return "bg-red-100 text-red-800 border-red-200";
-      case "rate_limited":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "onboarding":
-        return "bg-blue-100 text-blue-800 border-blue-200";
-      case "inactive":
-        return "bg-gray-50 text-gray-600 border-gray-300";
-      case "in_review":
-        return "bg-purple-100 text-purple-800 border-purple-200";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
-    }
-  }
+  const subjects = user.class_info ? Object.entries(user.class_info) : [];
 
-  function getRoleColor(role: string) {
-    switch (role) {
-      case "admin":
-        return "bg-purple-100 text-purple-800 border-purple-200";
-      case "teacher":
-        return "bg-blue-100 text-blue-800 border-blue-200";
-      case "student":
-        return "bg-green-100 text-green-800 border-green-200";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
-    }
-  }
+  const content = (
+    <div>
+      {/* Identity block */}
+      <div className="flex flex-wrap items-center gap-2">
+        <h3 className="text-base font-semibold text-slate-900">
+          {user.name || "Unnamed user"}
+        </h3>
+        <StateBadge state={user.state} />
+        <RolePill role={user.role} />
+      </div>
+      <p className="mt-0.5 font-mono text-xs text-muted-foreground">
+        {user.wa_id} · #{user.id}
+      </p>
 
-  const UserDetailContent = () => (
-    <div className="space-y-6">
-      {/* Basic Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <User className="w-4 h-4" />
-            Basic Information
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium text-gray-600">Name</label>
-              <p className="text-sm text-gray-900 mt-1">
-                {user.name || "Not provided"}
-              </p>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-600">
-                WhatsApp ID
-              </label>
-              <p className="text-sm font-mono text-gray-900 mt-1">
-                {user.wa_id}
-              </p>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-600">
-                User ID
-              </label>
-              <p className="text-sm font-mono text-gray-900 mt-1 flex items-center gap-1">
-                <Hash className="w-3 h-3" />
-                {user.id}
-              </p>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-600">
-                Birthday
-              </label>
-              <p className="text-sm text-gray-900 mt-1 flex items-center gap-1">
-                <Calendar className="w-3 h-3" />
-                {user.birthday ? formatDate(user.birthday) : "Not provided"}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="mt-4">
+        <SectionLabel>Profile</SectionLabel>
+        <div className="divide-y divide-border">
+          <Row label="Birthday">
+            {formatDay(user.birthday) ?? <Empty />}
+          </Row>
+          <Row label="School">{user.school_name || <Empty />}</Row>
+          <Row label="Region">{user.region || <Empty />}</Row>
+        </div>
 
-      {/* Status & Role */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Users className="w-4 h-4" />
-            Status & Role
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium text-gray-600">
-                Current State
-              </label>
-              <div className="mt-1">
-                <Badge
-                  className={`${getStateColor(
-                    user.state
-                  )} flex items-center gap-1 w-fit`}
-                >
-                  {getStateIcon(user.state)}
-                  {user.state.replace("_", " ")}
-                </Badge>
+        <SectionLabel>Teaching</SectionLabel>
+        <div className="divide-y divide-border">
+          {subjects.length === 0 ? (
+            <Row label="Classes">
+              <Empty />
+            </Row>
+          ) : (
+            subjects.map(([subject, classes]) => (
+              <div
+                key={subject}
+                className="flex items-baseline justify-between gap-4 py-2"
+              >
+                <span className="flex-none text-xs capitalize text-muted-foreground">
+                  {subject.replace(/_/g, " ")}
+                </span>
+                <span className="flex min-w-0 flex-wrap justify-end gap-1">
+                  {classes.length === 0 ? (
+                    <Empty />
+                  ) : (
+                    classes.map((className) => (
+                      <span
+                        key={className}
+                        className="rounded border bg-gray-50 px-1.5 py-px text-xs text-slate-700"
+                      >
+                        {className}
+                      </span>
+                    ))
+                  )}
+                </span>
               </div>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-600">Role</label>
-              <div className="mt-1">
-                <Badge
-                  className={`${getRoleColor(user.role)} capitalize w-fit`}
-                >
-                  {user.role}
-                </Badge>
-              </div>
-            </div>
-            <div className="col-span-2">
-              <label className="text-sm font-medium text-gray-600">
-                Onboarding State
-              </label>
-              <p className="text-sm text-gray-900 mt-1">
-                {user.onboarding_state || "Not set"}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+            ))
+          )}
+        </div>
 
-      {/* Educational Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <School className="w-4 h-4" />
-            Educational Information
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium text-gray-600">
-                School
-              </label>
-              <p className="text-sm text-gray-900 mt-1">
-                {user.school_name || "Not provided"}
-              </p>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-600">
-                Region
-              </label>
-              <p className="text-sm text-gray-900 mt-1 flex items-center gap-1">
-                <MapPin className="w-3 h-3" />
-                {user.region || "Not provided"}
-              </p>
-            </div>
-            <div className="col-span-2">
-              <label className="text-sm font-medium text-gray-600">
-                Class Information
-              </label>
-              <div className="mt-1">
-                {user.class_info ? (
-                  <div className="bg-gray-50 p-3 rounded-md">
-                    <pre className="text-xs text-gray-700 whitespace-pre-wrap">
-                      {JSON.stringify(user.class_info, null, 2)}
-                    </pre>
-                  </div>
-                ) : (
-                  <p className="text-sm text-gray-900">
-                    No class information available
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Activity Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <MessageSquare className="w-4 h-4" />
-            Activity Information
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 gap-4">
-            <div>
-              <label className="text-sm font-medium text-gray-600">
-                Last Message
-              </label>
-              <p className="text-sm text-gray-900 mt-1">
-                {formatDate(user.last_message_at)}
-              </p>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-600">
-                Account Created
-              </label>
-              <p className="text-sm text-gray-900 mt-1">
-                {formatDate(user.created_at)}
-              </p>
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-600">
-                Last Updated
-              </label>
-              <p className="text-sm text-gray-900 mt-1">
-                {formatDate(user.updated_at)}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        <SectionLabel>Activity</SectionLabel>
+        <div className="divide-y divide-border">
+          <Row label="Onboarding">
+            {user.onboarding_state ? (
+              <span className="capitalize">
+                {user.onboarding_state.replace(/_/g, " ")}
+              </span>
+            ) : (
+              <Empty />
+            )}
+          </Row>
+          <Row label="Last message">
+            {formatDate(user.last_message_at) ?? "Never"}
+          </Row>
+          <Row label="Created">{formatDate(user.created_at) ?? <Empty />}</Row>
+          <Row label="Last updated">
+            {formatDate(user.updated_at) ?? <Empty />}
+          </Row>
+        </div>
+      </div>
     </div>
   );
 
@@ -342,18 +266,13 @@ export function UserDetailDialog({
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
         <DrawerContent className="max-h-[90vh]">
-          <DrawerHeader>
-            <DrawerTitle className="flex items-center gap-2">
-              <User className="w-5 h-5" />
-              User Details
-            </DrawerTitle>
+          <DrawerHeader className="sr-only">
+            <DrawerTitle>User details</DrawerTitle>
             <DrawerDescription>
-              Complete information for {user.name || "Unnamed User"}
+              Details for {user.name || "unnamed user"}
             </DrawerDescription>
           </DrawerHeader>
-          <div className="px-4 pb-4 overflow-y-auto">
-            <UserDetailContent />
-          </div>
+          <div className="overflow-y-auto px-4 pb-6 pt-2">{content}</div>
         </DrawerContent>
       </Drawer>
     );
@@ -361,17 +280,14 @@ export function UserDetailDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="!max-w-full w-[85vw] max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <User className="w-5 h-5" />
-            User Details
-          </DialogTitle>
+      <DialogContent className="max-h-[90vh] max-w-md overflow-y-auto rounded-md p-5">
+        <DialogHeader className="sr-only">
+          <DialogTitle>User details</DialogTitle>
           <DialogDescription>
-            Complete information for {user.name || "Unnamed User"}
+            Details for {user.name || "unnamed user"}
           </DialogDescription>
         </DialogHeader>
-        <UserDetailContent />
+        {content}
       </DialogContent>
     </Dialog>
   );

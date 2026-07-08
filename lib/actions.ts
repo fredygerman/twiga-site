@@ -4,9 +4,8 @@ import { db } from "@/db";
 import { users } from "@/db/schema";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import { eq, and, or, ilike, gte, lte, desc } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { env } from "@/env.mjs";
-import type { AdminDashboardSearchParams } from "./search-params";
 import { revalidatePath } from "next/cache";
 
 // Create user in review status
@@ -80,54 +79,7 @@ export async function adminLogout() {
   redirect("/admin");
 }
 
-export async function getUsers(filters?: Partial<AdminDashboardSearchParams>) {
-  try {
-    const query = db.select().from(users);
-
-    // Build where conditions
-    const conditions = [];
-
-    // Search filter (searches in name, wa_id, school_name, and region)
-    if (filters?.search && filters.search.trim()) {
-      const searchTerm = `%${filters.search.trim()}%`;
-      conditions.push(
-        or(
-          ilike(users.name, searchTerm),
-          ilike(users.wa_id, searchTerm),
-          ilike(users.school_name, searchTerm),
-          ilike(users.region, searchTerm)
-        )
-      );
-    }
-
-    // Status filter (using user state)
-    if (filters?.status && filters.status !== "all") {
-      conditions.push(eq(users.state, filters.status));
-    }
-
-    // Date range filters
-    if (filters?.startDate) {
-      conditions.push(gte(users.created_at, new Date(filters.startDate)));
-    }
-
-    if (filters?.endDate) {
-      // Add 1 day to endDate to include the entire day
-      const endDate = new Date(filters.endDate);
-      endDate.setDate(endDate.getDate() + 1);
-      conditions.push(lte(users.created_at, endDate));
-    }
-
-    // Apply conditions if any exist
-    const finalQuery =
-      conditions.length > 0 ? query.where(and(...conditions)) : query;
-
-    const allUsers = await finalQuery.orderBy(desc(users.created_at));
-    return allUsers;
-  } catch (error) {
-    console.error("Error fetching users:", error);
-    return [];
-  }
-}
+// getUsers moved to lib/data.ts (React cache()-wrapped, throws on error)
 
 export async function updateUserState(
   userId: number,
