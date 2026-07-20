@@ -67,6 +67,17 @@ const partners: Entry[] = [
     icon: "users",
   },
   {
+    name: "Aalto AI Society",
+    desc: "Student-led AI society at Aalto University, Espoo — connecting academia, industry, and Finnish AI talent",
+    badge: "Development Partner",
+    url: "https://www.aaltoai.com/",
+    logo: "/logos/aaltoai.png",
+    logoAlt: "Aalto AI Society logo",
+    iconBg: "bg-slate-50 ring-slate-200",
+    badgeClass: "bg-twiga-forest-pale text-twiga-forest",
+    icon: "users",
+  },
+  {
     name: "TIB",
     desc: "Leibniz Information Center for Science and Technology research",
     badge: "MOU Signed",
