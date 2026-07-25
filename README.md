@@ -186,6 +186,7 @@ CREATE TABLE users (
 - **Admin Authentication**: Secure admin login with session management
 - **Database Security**: Read-only access recommended for production
 - **HTTPS**: Enable HTTPS in production environments
+- **Dependencies**: Run `pnpm audit` after dependency upgrades.
 
 ## 🔧 Troubleshooting
 
